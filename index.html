@@ -15,12 +15,11 @@
 <header class="bar">
   <a class="brand" href="https://ai-kakekomi.com/apps/">マークダウン練習帳<small>AIかけこみ寺</small></a>
   <span class="grow"></span>
-  <button type="button" id="samples-btn" aria-expanded="false" aria-controls="samples">お手本をまるごと入れる</button>
   <a class="manual" href="manual.html">使い方</a>
 </header>
 
-<div class="samples" id="samples" aria-label="お手本" hidden>
-  <span class="lbl">お手本：</span>
+<div class="samples" id="samples" aria-label="お手本">
+  <span class="lbl">お手本をまるごと：</span>
 </div>
 
 <main class="work">
@@ -32,6 +31,7 @@
       <button type="button" id="copy-md" class="primary">コピー（AIに貼る）</button>
       <button type="button" id="dl-md">.md で保存</button>
       <button type="button" id="clear" class="quiet">全部消す</button>
+      <button type="button" id="undo" class="quiet">元にもどす</button>
     </div>
     <div class="blocks" id="blocks" aria-label="ブロックを入れる">
       <span class="lbl">押すと入る：</span>

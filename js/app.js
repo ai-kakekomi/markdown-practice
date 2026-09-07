@@ -107,13 +107,13 @@
     el.preview.scrollTop = el.preview.scrollHeight;
   }
 
+  /* ---------- 元にもどす（1回だけ） ----------
+     確認ダイアログを出さない代わりに、消す前の文をひとつ覚えておく */
+  var undoText = null;
+  function remember() { undoText = el.editor.value; }
+
   /* ---------- 見本 ---------- */
   function drawSamples() {
-    $("samples-btn").addEventListener("click", function () {
-      var open = el.samples.hidden;
-      el.samples.hidden = !open;
-      $("samples-btn").setAttribute("aria-expanded", open ? "true" : "false");
-    });
     var list = window.MDP_SAMPLES || [];
     list.forEach(function (s) {
       var b = document.createElement("button");
@@ -125,10 +125,9 @@
     });
   }
   function putSample(s) {
-    /* 書きかけがあるときは、上書きしてよいか聞く。押し間違いで消えると練習の気が失せる */
-    var cur = el.editor.value.trim();
-    var isSample = (window.MDP_SAMPLES || []).some(function (x) { return x.text.trim() === cur; });
-    if (cur && !isSample && !confirm("いま書いているものを消して、お手本「" + s.label + "」を入れます。よいですか？")) { return; }
+    /* 確認は出さない。さくさく遊べることを優先する。
+       消したものは「元にもどす」で1回だけ戻せる */
+    remember();
     el.editor.value = s.text;
     try { localStorage.setItem(SAMPLE_KEY, s.id); } catch (e) {}
     markSample(s.id);
@@ -226,7 +225,7 @@
     drawSamples();
 
     /* 初めて開いた人は白紙から。ブロックを1つずつ押して組み上げるのが、この練習帳の入口。
-       まるごとのお手本は「お手本をまるごと入れる」の中に畳んである */
+       まるごとのお手本は、上の列から入れられる */
     var draft = loadDraft();
     if (draft) {
       el.editor.value = draft;
@@ -243,10 +242,18 @@
     $("copy-html").addEventListener("click", function () { copyText(exportHtml(), "整形後（ホームページの形）をコピーしました"); });
     $("clear").addEventListener("click", function () {
       if (!el.editor.value.trim()) return;
-      if (!confirm("書いたものを全部消します。よいですか？（保存したファイルは残ります）")) return;
+      remember();
       el.editor.value = ""; markSample(null);
       try { localStorage.removeItem(STORE_KEY); localStorage.removeItem(SAMPLE_KEY); } catch (e) {}
       paint(); el.editor.focus();
+      toast("全部消しました。「元にもどす」で戻せます");
+    });
+    $("undo").addEventListener("click", function () {
+      if (undoText === null) { toast("戻すものがありません"); return; }
+      var now = el.editor.value;
+      el.editor.value = undoText; undoText = now;
+      paint(); saveSoon(); el.editor.focus();
+      toast("元にもどしました");
     });
   }
 

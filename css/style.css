@@ -81,13 +81,12 @@ button[disabled] { opacity: .4; cursor: default; }
 .samples .lbl { font-size: .78rem; color: var(--text-light); white-space: nowrap; align-self: center; margin-right: 4px; }
 .samples button { font-size: .8rem; padding: 6px 12px; min-height: 36px; flex: 0 0 auto; }
 .samples button.is-on { background: var(--primary-pale); border-color: var(--primary); font-weight: 700; }
-.samples[hidden] { display: none; }
 
 /* ---------- 本体：スマホは上に整形後、下に入力 ---------- */
 .work {
   display: grid;
   grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
-  height: calc(100dvh - var(--bar-h));
+  height: calc(100dvh - var(--bar-h) - 53px);
   min-height: 480px;
 }
 /* min-width: 0 が無いと、横に流れるボタン列が列の幅を押し広げて、右の欄がつぶれる */
@@ -170,7 +169,7 @@ textarea#editor::placeholder { color: var(--text-mute); }
   .work {
     grid-template-rows: none;
     grid-template-columns: 1fr 1fr;
-    height: calc(100dvh - var(--bar-h));
+    height: calc(100dvh - var(--bar-h) - 53px);
   }
   .editor-pane { order: 1; border-right: 3px solid var(--line); }
   .preview-pane { order: 2; border-bottom: 0; }

@@ -56,7 +56,7 @@ var visible = index.replace(/<script[\s\S]*?<\/script>/g, "").replace(/<[^>]+>/g
 ok(visible.indexOf("どこにも送られません") >= 0, "画面に「どこにも送られません」と書いてある");
 ok(visible.indexOf("AIにはこう見えます") >= 0, "整形後に「AIにはこう見えます」と書いてある");
 ok(index.indexOf('id="editor"') > 0 && index.indexOf('id="preview"') > 0, "書く欄と整形後の欄がある");
-["copy-md", "dl-md", "dl-html", "copy-html", "clear", "samples-btn", "blocks"].forEach(function (id) {
+["copy-md", "dl-md", "dl-html", "copy-html", "clear", "undo", "samples", "blocks"].forEach(function (id) {
   ok(index.indexOf('id="' + id + '"') > 0, "ボタン " + id + " がある");
 });
 var css = read("css/style.css");
@@ -86,6 +86,9 @@ ok(/<table>/.test(marked.parse(byId.table.text, { gfm: true })), "「表」は�
 ok(/<pre>/.test(marked.parse(byId.code.text)), "「そのまま枠」は枠になる");
 ok(app.indexOf("setSelectionRange(at, at + len)") > 0, "入れた見本の文字は選択された状態になる（そのまま打てば置き換わる）");
 ok(!/first\.text/.test(app), "初めて開いたときは白紙（お手本を勝手に入れない）");
+ok(!/confirm\(/.test(app), "確認ダイアログを出さない（さくさく遊べる）");
+ok(app.indexOf("undoText") > 0, "消したものは「元にもどす」で戻せる");
+ok(!/id="samples"[^>]*hidden/.test(index), "お手本の列は最初から出ている");
 ok(app.indexOf("var s = t.selectionEnd, e = s;") > 0, "ブロックは選択を置き換えず、カーソルの後ろに足す");
 ok(app.indexOf('v.indexOf("\\n\\n", s)') > 0, "ブロックは、いまの段落の終わりに足す（箇条書きの真ん中に刺さらない）");
 ok(/\.pane \{[^}]*min-width: 0/.test(css), "列の幅がボタン列に押し広げられない（min-width: 0）");
