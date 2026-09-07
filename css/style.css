@@ -62,6 +62,16 @@ button.quiet { border-color: transparent; background: transparent; color: var(--
 button.quiet:hover { background: var(--warm-bg-alt); color: var(--text); }
 button[disabled] { opacity: .4; cursor: default; }
 
+/* ---------- ブロックのボタン列（書く欄の上） ---------- */
+.blocks {
+  display: flex; gap: 6px; overflow-x: auto; padding: 8px 12px;
+  background: var(--warm-bg-alt); border-bottom: 1px solid var(--line);
+  -webkit-overflow-scrolling: touch; scrollbar-width: thin;
+}
+.blocks .lbl { font-size: .78rem; color: var(--text-light); white-space: nowrap; align-self: center; margin-right: 4px; }
+.blocks button { font-size: .84rem; padding: 6px 12px; min-height: 38px; flex: 0 0 auto; }
+.blocks button b { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; color: var(--primary); margin-right: .35em; font-weight: 700; }
+
 /* ---------- 見本のボタン列 ---------- */
 .samples {
   display: flex; gap: 6px; overflow-x: auto; padding: 8px 12px;
@@ -71,15 +81,17 @@ button[disabled] { opacity: .4; cursor: default; }
 .samples .lbl { font-size: .78rem; color: var(--text-light); white-space: nowrap; align-self: center; margin-right: 4px; }
 .samples button { font-size: .8rem; padding: 6px 12px; min-height: 36px; flex: 0 0 auto; }
 .samples button.is-on { background: var(--primary-pale); border-color: var(--primary); font-weight: 700; }
+.samples[hidden] { display: none; }
 
 /* ---------- 本体：スマホは上に整形後、下に入力 ---------- */
 .work {
   display: grid;
   grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
-  height: calc(100dvh - var(--bar-h) - 53px);
+  height: calc(100dvh - var(--bar-h));
   min-height: 480px;
 }
-.pane { display: flex; flex-direction: column; min-height: 0; }
+/* min-width: 0 が無いと、横に流れるボタン列が列の幅を押し広げて、右の欄がつぶれる */
+.pane { display: flex; flex-direction: column; min-height: 0; min-width: 0; }
 .pane-head {
   flex-wrap: wrap;
   display: flex; align-items: center; gap: 8px;
@@ -138,25 +150,6 @@ textarea#editor::placeholder { color: var(--text-mute); }
 .md img { max-width: 100%; }
 .md strong { color: #1f4d38; }
 
-/* ---------- 早見表（引き出し） ---------- */
-.cheat {
-  position: fixed; inset: auto 0 0 0; z-index: 40;
-  max-height: 70vh; overflow: auto;
-  background: var(--white); border-top: 1px solid var(--line);
-  box-shadow: 0 -6px 24px rgba(0,0,0,.12);
-  padding: 12px 16px 24px;
-  transform: translateY(100%); transition: transform .2s ease;
-}
-.cheat.is-open { transform: translateY(0); }
-.cheat h2 { font-size: 1rem; margin: 0 0 8px; display: flex; align-items: center; }
-.cheat h2 .grow { flex: 1; }
-.cheat table { width: 100%; border-collapse: collapse; font-size: .88rem; }
-.cheat th, .cheat td { border-bottom: 1px solid var(--line); padding: .4em .5em; text-align: left; vertical-align: top; }
-.cheat th { color: var(--text-light); font-weight: 500; white-space: nowrap; }
-.cheat code { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; background: #F1EDE4; padding: .1em .4em; border-radius: 5px; font-size: .92em; white-space: pre; }
-.cheat .tip { font-size: .8rem; color: var(--text-light); margin-top: 10px; }
-@media (prefers-reduced-motion: reduce) { .cheat { transition: none; } }
-
 /* ---------- お知らせ ---------- */
 .toast {
   position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); z-index: 60;
@@ -177,9 +170,8 @@ textarea#editor::placeholder { color: var(--text-mute); }
   .work {
     grid-template-rows: none;
     grid-template-columns: 1fr 1fr;
-    height: calc(100dvh - var(--bar-h) - 53px);
+    height: calc(100dvh - var(--bar-h));
   }
   .editor-pane { order: 1; border-right: 3px solid var(--line); }
   .preview-pane { order: 2; border-bottom: 0; }
-  .cheat { inset: auto 0 0 auto; width: 460px; max-height: 80vh; border-left: 1px solid var(--line); border-radius: var(--radius) 0 0 0; }
 }

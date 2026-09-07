@@ -5,7 +5,7 @@
    どこにも送られない。
 
    できること：
-   - 記入例を入れて、書き換えて練習する
+   - ブロックを1つずつ押して組み上げる。お手本をまるごと入れて書き換える
    - 書いたものを .md（マークダウンのまま）か .html（整形後）で保存する
    - 書いたものをコピーする（AIに貼るため）
    ------------------------------------------------------------ */
@@ -29,7 +29,7 @@
 
   function paint() {
     var md = el.editor.value;
-    el.preview.innerHTML = md.trim() ? render(md) : "<p>左（スマホでは下）に書くと、ここに整形後が出ます。<br>上の「記入例」を押すと、お手本が入ります。</p>";
+    el.preview.innerHTML = md.trim() ? render(md) : "<p>書いたものが、ここに整形されて出ます。<br>「押すと入る」のボタンを1つずつ押して、組み上げてみてください。</p>";
     el.preview.classList.toggle("is-empty", !md.trim());
     el.count.textContent = md.length ? md.length.toLocaleString("ja-JP") + " 文字" : "";
   }
@@ -46,8 +46,74 @@
     try { return localStorage.getItem(STORE_KEY) || ""; } catch (e) { return ""; }
   }
 
+  /* ---------- ブロック（押すと入る） ----------
+     「やろうと思った → できた」を1押しで体験させる。
+     見本の文字を選択した状態で入れるので、そのまま打てば置き換わる。
+     sel は選択する文字。無ければ全体を選択 */
+  var BLOCKS = [
+    { id: "h1",    label: "見出し",     mark: "#",    text: "# 見出し",                       sel: "見出し" },
+    { id: "h2",    label: "小見出し",   mark: "##",   text: "## 小見出し",                    sel: "小見出し" },
+    { id: "p",     label: "文",         mark: "",     text: "ここに文を書きます。",            sel: "ここに文を書きます。" },
+    { id: "ul",    label: "箇条書き",   mark: "-",    text: "- ひとつめ\n- ふたつめ\n- みっつめ", sel: "ひとつめ" },
+    { id: "ol",    label: "番号つき",   mark: "1.",   text: "1. さいしょに\n2. つぎに\n3. さいごに", sel: "さいしょに" },
+    { id: "bold",  label: "太字",       mark: "**",   text: "**大事なところ**",               sel: "大事なところ" },
+    { id: "quote", label: "引用・注意", mark: ">",    text: "> 引用や注意書きは、ここに。",   sel: "引用や注意書きは、ここに。" },
+    { id: "table", label: "表",         mark: "|",    text: "| 項目 | 内容 |\n|---|---|\n| 日時 | 10/17(土) 10:00 |\n| 場所 | 公民館 |", sel: "項目" },
+    { id: "hr",    label: "区切り線",   mark: "---",  text: "---",                             sel: "" },
+    { id: "link",  label: "リンク",     mark: "[ ]",  text: "[AIかけこみ寺](https://ai-kakekomi.com)", sel: "AIかけこみ寺" },
+    { id: "code",  label: "そのまま枠", mark: "```",  text: "```\nこの枠の中は、書いたとおりに出ます。\n```", sel: "この枠の中は、書いたとおりに出ます。" }
+  ];
+
+  function drawBlocks() {
+    BLOCKS.forEach(function (b) {
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.setAttribute("data-block", b.id);
+      if (b.mark) { var m = document.createElement("b"); m.textContent = b.mark; btn.appendChild(m); }
+      btn.appendChild(document.createTextNode(b.label));
+      btn.addEventListener("click", function () { insertBlock(b); });
+      el.blocks.appendChild(btn);
+    });
+  }
+
+  /* カーソルの位置にブロックを入れる。
+     前後に空の行を1つ置く（マークダウンは空の行で段落を切るため）。
+     行の途中なら、いったん行を変えてから入れる */
+  function insertBlock(b) {
+    var t = el.editor, v = t.value;
+    /* 選択は置き換えない。前に入れた見本の文字が選ばれたままの状態で次を押すと、
+       その見本が消えてしまう（実際に起きた）。常にカーソルの後ろに足す */
+    var s = t.selectionEnd, e = s;
+    /* いまいる段落（かたまり）の終わりまで進めてから足す。
+       箇条書きの1行目を選んだまま「表」を押すと、箇条書きの真ん中に表が刺さっていた */
+    var gap = v.indexOf("\n\n", s);
+    s = e = (gap === -1) ? v.length : gap;
+    var before = v.slice(0, s), after = v.slice(e);
+    var head = "";
+    if (before.length && !/\n\n$/.test(before)) { head = /\n$/.test(before) ? "\n" : "\n\n"; }
+    var tail = "";
+    if (after.length && !/^\n\n/.test(after)) { tail = /^\n/.test(after) ? "\n" : "\n\n"; }
+    var ins = head + b.text + tail;
+    t.value = before + ins + after;
+    /* 見本の文字を選択しておく。そのまま打てば置き換わる */
+    var at = before.length + head.length + (b.sel ? b.text.indexOf(b.sel) : b.text.length);
+    var len = b.sel ? b.sel.length : 0;
+    t.focus();
+    t.setSelectionRange(at, at + len);
+    paint(); saveSoon();
+    /* 入れた場所が見えるように */
+    var line = t.value.slice(0, at).split("\n").length;
+    t.scrollTop = Math.max(0, (line - 4) * 27);
+    el.preview.scrollTop = el.preview.scrollHeight;
+  }
+
   /* ---------- 見本 ---------- */
   function drawSamples() {
+    $("samples-btn").addEventListener("click", function () {
+      var open = el.samples.hidden;
+      el.samples.hidden = !open;
+      $("samples-btn").setAttribute("aria-expanded", open ? "true" : "false");
+    });
     var list = window.MDP_SAMPLES || [];
     list.forEach(function (s) {
       var b = document.createElement("button");
@@ -62,13 +128,13 @@
     /* 書きかけがあるときは、上書きしてよいか聞く。押し間違いで消えると練習の気が失せる */
     var cur = el.editor.value.trim();
     var isSample = (window.MDP_SAMPLES || []).some(function (x) { return x.text.trim() === cur; });
-    if (cur && !isSample && !confirm("いま書いているものを消して、記入例「" + s.label + "」を入れます。よいですか？")) { return; }
+    if (cur && !isSample && !confirm("いま書いているものを消して、お手本「" + s.label + "」を入れます。よいですか？")) { return; }
     el.editor.value = s.text;
     try { localStorage.setItem(SAMPLE_KEY, s.id); } catch (e) {}
     markSample(s.id);
     paint(); saveSoon();
     el.editor.scrollTop = 0; el.preview.scrollTop = 0;
-    toast("記入例「" + s.label + "」を入れました。自由に書き換えてください");
+    toast("お手本「" + s.label + "」を入れました。自由に書き換えてください");
   }
   function markSample(id) {
     var bs = el.samples.querySelectorAll("button[data-sample]");
@@ -143,13 +209,6 @@
     toast.timer = setTimeout(function () { el.toast.hidden = true; }, 2600);
   }
 
-  /* ---------- 早見表 ---------- */
-  function toggleCheat(open) {
-    var on = (open === undefined) ? !el.cheat.classList.contains("is-open") : open;
-    el.cheat.classList.toggle("is-open", on);
-    el.cheatBtn.setAttribute("aria-expanded", on ? "true" : "false");
-  }
-
   /* ---------- Tab キーで空白を入れる（階層の練習で要る） ---------- */
   function tabKey(e) {
     if (e.key !== "Tab") return;
@@ -162,19 +221,16 @@
 
   /* ---------- 起動 ---------- */
   function boot() {
-    ["editor", "preview", "samples", "count", "toast", "cheat", "cheatBtn"].forEach(function (k) {
-      el[k] = $({ editor: "editor", preview: "preview", samples: "samples", count: "count", toast: "toast", cheat: "cheat", cheatBtn: "cheat-btn" }[k]);
-    });
+    ["editor", "preview", "samples", "blocks", "count", "toast"].forEach(function (k) { el[k] = $(k); });
+    drawBlocks();
     drawSamples();
 
+    /* 初めて開いた人は白紙から。ブロックを1つずつ押して組み上げるのが、この練習帳の入口。
+       まるごとのお手本は「お手本をまるごと入れる」の中に畳んである */
     var draft = loadDraft();
     if (draft) {
       el.editor.value = draft;
       try { markSample(localStorage.getItem(SAMPLE_KEY)); } catch (e) {}
-    } else {
-      /* 初めて開いた人には、いきなり白紙を見せない。基本の書き方を入れておく */
-      var first = (window.MDP_SAMPLES || [])[0];
-      if (first) { el.editor.value = first.text; markSample(first.id); }
     }
     paint();
 
@@ -192,13 +248,10 @@
       try { localStorage.removeItem(STORE_KEY); localStorage.removeItem(SAMPLE_KEY); } catch (e) {}
       paint(); el.editor.focus();
     });
-    el.cheatBtn.addEventListener("click", function () { toggleCheat(); });
-    $("cheat-close").addEventListener("click", function () { toggleCheat(false); });
-    document.addEventListener("keydown", function (e) { if (e.key === "Escape") toggleCheat(false); });
   }
 
   if (document.readyState === "loading") { document.addEventListener("DOMContentLoaded", boot); } else { boot(); }
 
   /* テストから触れるように */
-  window.MDP = { render: render, fileBase: fileBase, exportHtml: exportHtml };
+  window.MDP = { render: render, fileBase: fileBase, exportHtml: exportHtml, blocks: BLOCKS, insertBlock: insertBlock };
 })();

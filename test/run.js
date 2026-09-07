@@ -56,7 +56,7 @@ var visible = index.replace(/<script[\s\S]*?<\/script>/g, "").replace(/<[^>]+>/g
 });
 ok(visible.indexOf("どこにも送られません") >= 0, "画面に「どこにも送られません」と書いてある");
 ok(index.indexOf('id="editor"') > 0 && index.indexOf('id="preview"') > 0, "書く欄と整形後の欄がある");
-["copy-md", "dl-md", "dl-html", "copy-html", "clear", "cheat-btn"].forEach(function (id) {
+["copy-md", "dl-md", "dl-html", "copy-html", "clear", "samples-btn", "blocks"].forEach(function (id) {
   ok(index.indexOf('id="' + id + '"') > 0, "ボタン " + id + " がある");
 });
 var css = read("css/style.css");
@@ -69,8 +69,28 @@ var manual = read("manual.html");
 });
 ok(manual.indexOf("github.com/ai-kakekomi/markdown-practice") >= 0, "使い方のプロンプトにリポジトリのアドレスがある");
 
-console.log("\n== 3. 整形と書き出し ==");
+console.log("\n== 2.5 ブロック ==");
 var app = read("js/app.js");
+var blocksSrc = app.match(/var BLOCKS = \[[\s\S]*?\n  \];/)[0];
+var BLOCKS = new Function(blocksSrc + " return BLOCKS;")();
+ok(BLOCKS.length >= 10, "ブロックが10個以上ある", String(BLOCKS.length));
+BLOCKS.forEach(function (b) {
+  ok(b.id && b.label && typeof b.text === "string", "ブロック「" + b.label + "」に id・label・text がある");
+  ok(!b.sel || b.text.indexOf(b.sel) >= 0, "ブロック「" + b.label + "」の選択する文字が見本の中にある");
+  var html = marked.parse(b.text, { gfm: true, breaks: true });
+  ok(html.trim().length > 0, "ブロック「" + b.label + "」が整形できる");
+});
+var byId = {}; BLOCKS.forEach(function (b) { byId[b.id] = b; });
+ok(/<h1/.test(marked.parse(byId.h1.text)), "「見出し」は h1 になる");
+ok(/<table>/.test(marked.parse(byId.table.text, { gfm: true })), "「表」は表になる");
+ok(/<pre>/.test(marked.parse(byId.code.text)), "「そのまま枠」は枠になる");
+ok(app.indexOf("setSelectionRange(at, at + len)") > 0, "入れた見本の文字は選択された状態になる（そのまま打てば置き換わる）");
+ok(!/first\.text/.test(app), "初めて開いたときは白紙（お手本を勝手に入れない）");
+ok(app.indexOf("var s = t.selectionEnd, e = s;") > 0, "ブロックは選択を置き換えず、カーソルの後ろに足す");
+ok(app.indexOf('v.indexOf("\\n\\n", s)') > 0, "ブロックは、いまの段落の終わりに足す（箇条書きの真ん中に刺さらない）");
+ok(/\.pane \{[^}]*min-width: 0/.test(css), "列の幅がボタン列に押し広げられない（min-width: 0）");
+
+console.log("\n== 3. 整形と書き出し ==");
 ok(app.indexOf("breaks: true") > 0, "改行はそのまま改行にする（Enter で行が変わる）");
 ok(app.indexOf("URL.createObjectURL") > 0 && app.indexOf("a.download") > 0, ".md と .html の保存はブラウザの中で作る（送信しない）");
 ok(!/fetch\(|XMLHttpRequest|navigator\.sendBeacon/.test(app), "どこにも送信していない");
