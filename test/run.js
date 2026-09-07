@@ -26,7 +26,7 @@ var marked = sandbox.marked || sandbox.window.marked;
 var SAMPLES = sandbox.window.MDP_SAMPLES;
 
 console.log("\n== 1. 記入例 ==");
-ok(Array.isArray(SAMPLES) && SAMPLES.length >= 8, "お手本が8つ以上ある", String(SAMPLES && SAMPLES.length));
+ok(Array.isArray(SAMPLES) && SAMPLES.length >= 9, "お手本が9つ以上ある", String(SAMPLES && SAMPLES.length));
 ok(SAMPLES[0].id === "readme" && /README\.md/.test(SAMPLES[0].label), "最初のお手本は README.md（この練習帳の説明書）");
 var ids = {};
 SAMPLES.forEach(function (s) {
@@ -56,7 +56,7 @@ var visible = index.replace(/<script[\s\S]*?<\/script>/g, "").replace(/<[^>]+>/g
 ok(visible.indexOf("どこにも送られません") >= 0, "画面に「どこにも送られません」と書いてある");
 ok(visible.indexOf("AIにはこう見えます") >= 0, "整形後に「AIにはこう見えます」と書いてある");
 ok(index.indexOf('id="editor"') > 0 && index.indexOf('id="preview"') > 0, "書く欄と整形後の欄がある");
-["copy-md", "dl-md", "dl-html", "copy-html", "clear", "undo", "samples", "blocks"].forEach(function (id) {
+["copy-md", "dl-md", "dl-html", "dl-png", "dl-pdf", "copy-html", "clear", "undo", "samples", "blocks"].forEach(function (id) {
   ok(index.indexOf('id="' + id + '"') > 0, "ボタン " + id + " がある");
 });
 var css = read("css/style.css");
@@ -122,6 +122,12 @@ ok(fb({ editor: { value: "# お願い：夏祭り/案内*文\n本文" } }) === "
 ok(/^markdown-\d{8}$/.test(fb({ editor: { value: "見出しなし" } })), "見出しが無ければ日付の名前になる");
 var out = marked.parse("# 題\n\n- a\n- b\n\n| x | y |\n|---|---|\n| 1 | 2 |", { gfm: true, breaks: true });
 ok(/<h1/.test(out) && /<ul>/.test(out) && /<table>/.test(out), "見出し・箇条書き・表が整形される");
+ok(app.indexOf("html2canvas(") > 0 && app.indexOf('".png"') > 0, "画像（PNG）で保存できる");
+ok(app.indexOf("window.print()") > 0, "PDF はブラウザの印刷で保存する");
+ok(/@media print[\s\S]*\.editor-pane[^}]*display: none/.test(css), "印刷のときは書く欄を出さない（整形後だけ）");
+ok(fs.existsSync(path.join(ROOT, "vendor", "html2canvas.min.js")), "html2canvas を同梱している");
+var friend = SAMPLES.filter(function (x) { return x.id === "ai-friend"; })[0];
+ok(!!friend && /人間のふりをしない/.test(friend.text) && /専門の窓口/.test(friend.text), "AIフレンドのお手本に「人間のふりをしない」「専門の窓口」がある");
 
 console.log("\n============================================");
 console.log("  成功 " + pass + " 件 ／ 失敗 " + fail + " 件");

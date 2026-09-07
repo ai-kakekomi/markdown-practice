@@ -126,13 +126,14 @@
 
   <section class="card" id="samples">
     <h2 style="margin-top:0">4. お手本の読みかた</h2>
-    <p>上に並ぶお手本は8つあります。お手本には解説を付けていません。型そのものを見て、書き換えてください。なぜそう書くと伝わるかは、ここに書きます。</p>
+    <p>上に並ぶお手本は9つあります。お手本には解説を付けていません。型そのものを見て、書き換えてください。なぜそう書くと伝わるかは、ここに書きます。</p>
     <ul>
       <li><strong>README.md（この練習帳の説明書）</strong>：この練習帳の説明書を、マークダウンで書いたもの。読むと使い方がわかり、見ると書き方がわかります</li>
       <li><strong>基本の書き方</strong>：記号の一覧。まずこれを書き換えて、整形後がどう変わるかを見る</li>
       <li><strong>AIへのお願い文</strong>：4つの見出しの型。これが本体です</li>
       <li><strong>CLAUDE.md / AGENTS.md</strong>：Claude Code や Codex のようなAIの道具に、毎回読ませる「決まりごと」のファイル。作業する場所にこの名前で置いておくと、毎回説明しなくてすみます</li>
       <li><strong>アプリを作ってもらう</strong>／<strong>ホームページを作ってもらう</strong>／<strong>チラシを作ってもらう</strong>：作りものを頼むときの型。「画面にあるもの」「材料」「印刷の条件」のように、AIが想像で埋めがちなところを先に書く</li>
+      <li><strong>AIフレンドを作る</strong>：AIに性格を渡す文章（システムプロンプト）の型。ChatGPT の「カスタム指示」や Claude の「プロジェクトの指示」に貼って使います。人間のふりをしない、まわりの人につなぐ、といった「やらないこと」を入れてあります</li>
       <li><strong>議事録をまとめてもらう</strong>：走り書きをそのまま渡して、返し方だけ指定する型</li>
     </ul>
     <p>お手本の日時や名前は架空のものです。実在の人や団体とは関係ありません。</p>
@@ -143,6 +144,8 @@
     <ul>
       <li><strong>コピー（AIに貼る）</strong>：書いたものをそのままコピーします。AIの画面に貼って使います。ふだん使うのはこれです</li>
       <li><strong>.md で保存</strong>：書いたものを、マークダウンのままファイルに保存します。あとで開いて続きを書けます。CLAUDE.md として使うときも、これで保存して名前を変えます</li>
+      <li><strong>画像で保存</strong>：整形後を1枚の画像（PNG）にして保存します。LINE や SNS で人に見せるときに。長い文章は縦に長い1枚になります</li>
+      <li><strong>PDF で保存</strong>：ブラウザの印刷画面が開くので、送り先で「PDF に保存」を選んでください。スマホでも同じです。印刷にも使えます</li>
       <li><strong>.html で保存</strong>：整形後を、ホームページと同じ形のファイルに保存します。ブラウザで開くと、いま見えている整形後がそのまま出ます。人に渡すときに</li>
       <li><strong>整形後のコピー</strong>：整形後をホームページの形の文字としてコピーします。ホームページを作っている人向け</li>
     </ul>
@@ -208,7 +211,7 @@
     <h2 style="margin-top:0">9. ライセンスと免責</h2>
     <p>
       プログラムは <a href="https://github.com/ai-kakekomi/markdown-practice/blob/main/LICENSE" target="_blank" rel="noopener">MITライセンス</a>（著作権者：AIかけこみ寺 / AI Kakekomi-dera）で公開しています。
-      整形の部品として <a href="https://github.com/markedjs/marked" target="_blank" rel="noopener">marked</a>（MITライセンス）を同梱しています。
+      整形の部品として <a href="https://github.com/markedjs/marked" target="_blank" rel="noopener">marked</a>、画像にする部品として <a href="https://github.com/niklasvh/html2canvas" target="_blank" rel="noopener">html2canvas</a>（どちらもMITライセンス）を同梱しています。
     </p>
     <p>
       この練習帳は無保証です。書いたものの内容や、AIに貼った結果について、制作者は責任を負いません。

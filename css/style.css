@@ -197,3 +197,23 @@ textarea#editor::placeholder { color: var(--text-mute); }
   .editor-pane { order: 1; border-right: 3px solid var(--line); }
   .preview-pane { order: 2; border-bottom: 0; }
 }
+
+/* ---------- 画像に書き出すときの一時的な置き場 ---------- */
+.shot {
+  position: absolute; left: -10000px; top: 0;
+  width: 760px; padding: 32px 36px; background: #fff; color: #2C2C2C;
+  font-family: "Zen Maru Gothic", "Hiragino Maru Gothic ProN", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+  font-size: 17px; line-height: 1.8;
+}
+
+/* ---------- PDF（印刷）：整形後だけを紙に出す ---------- */
+@media print {
+  .bar, .samples, .editor-pane, .foot, .toast, .challenge { display: none !important; }
+  body { background: #fff; }
+  .work { display: block; height: auto; min-height: 0; }
+  .preview-pane { border: 0; }
+  .pane-head { display: none; }
+  .preview { overflow: visible; height: auto; padding: 0; }
+  .md pre { white-space: pre-wrap; }
+  .md a { color: inherit; text-decoration: underline; }
+}

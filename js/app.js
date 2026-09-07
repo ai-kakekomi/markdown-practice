@@ -6,7 +6,7 @@
 
    できること：
    - ブロックを1つずつ押して組み上げる。お手本をまるごと入れて書き換える
-   - 書いたものを .md（マークダウンのまま）か .html（整形後）で保存する
+   - 書いたものを .md（マークダウンのまま）、.html・画像・PDF（整形後）で保存する
    - 書いたものをコピーする（AIに貼るため）
    ------------------------------------------------------------ */
 (function () {
@@ -238,6 +238,45 @@
     return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; });
   }
 
+  /* ---------- 画像と PDF ----------
+     作ったものを人に見せたい、のための2つ。
+     画像：整形後を画面の外に写し取り、そこを絵にして保存する（html2canvas）。
+     PDF：ブラウザの印刷を呼ぶ。印刷のときは整形後だけが紙に出るようにしてある */
+  function exportPng() {
+    if (!window.html2canvas) { toast("画像にする部品が読み込めませんでした。PDF で保存を試してください"); return; }
+    if (!el.editor.value.trim()) { toast("まだ何も書いていません"); return; }
+    var shot = document.createElement("div");
+    shot.className = "shot md";
+    shot.innerHTML = render(el.editor.value);
+    document.body.appendChild(shot);
+    toast("画像を作っています…");
+    html2canvas(shot, { backgroundColor: "#ffffff", scale: 2, useCORS: true, logging: false })
+      .then(function (canvas) {
+        shot.remove();
+        canvas.toBlob(function (blob) {
+          if (!blob) { toast("画像にできませんでした。PDF で保存を試してください"); return; }
+          var url = URL.createObjectURL(blob);
+          var a = document.createElement("a");
+          a.href = url; a.download = fileBase() + ".png";
+          document.body.appendChild(a); a.click(); a.remove();
+          setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+          toast("画像を保存しました（" + fileBase() + ".png）");
+        }, "image/png");
+      })
+      .catch(function () { shot.remove(); toast("画像にできませんでした。PDF で保存を試してください"); });
+  }
+  function exportPdf() {
+    if (!el.editor.value.trim()) { toast("まだ何も書いていません"); return; }
+    /* 印刷画面のファイル名は、ページの題名から取られる */
+    var keep = document.title;
+    document.title = fileBase();
+    toast("印刷の画面で「PDF に保存」を選んでください");
+    setTimeout(function () {
+      window.print();
+      document.title = keep;
+    }, 300);
+  }
+
   /* ---------- コピー ---------- */
   function copyText(text, msg) {
     function done(ok) { toast(ok ? msg : "コピーできませんでした。文章を選んでコピーしてください"); }
@@ -296,6 +335,8 @@
     $("copy-md").addEventListener("click", function () { copyText(el.editor.value, "書いたものをコピーしました。AIの画面に貼ってください"); });
     $("dl-md").addEventListener("click", function () { download(fileBase() + ".md", el.editor.value, "text/markdown"); toast("マークダウンのまま保存しました（" + fileBase() + ".md）"); });
     $("dl-html").addEventListener("click", function () { download(fileBase() + ".html", exportHtml(), "text/html"); toast("整形後を保存しました（" + fileBase() + ".html）"); });
+    $("dl-png").addEventListener("click", exportPng);
+    $("dl-pdf").addEventListener("click", exportPdf);
     $("copy-html").addEventListener("click", function () { copyText(exportHtml(), "整形後（ホームページの形）をコピーしました"); });
     $("clear").addEventListener("click", function () {
       if (!el.editor.value.trim()) return;
