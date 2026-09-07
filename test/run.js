@@ -36,9 +36,7 @@ SAMPLES.forEach(function (s) {
   ok(s.text.indexOf("\\`") === -1, "「" + s.label + "」に逆斜線つきのバッククォートが残っていない");
   var html = marked.parse(s.text, { gfm: true, breaks: true });
   ok(html.indexOf("<h1") >= 0, "「" + s.label + "」が整形できる");
-  if (s.id !== "basics") {
-    ok(/<blockquote>/.test(html), "「" + s.label + "」の頭に「なぜこう書くと伝わるか」の引用がある");
-  }
+  ok(!/^> /.test(s.text), "「" + s.label + "」は解説の引用で始まらない（型そのものを見せる）");
 });
 /* 実在のメンバー名を見本に出さない（公開されるものなので） */
 var real = ["大場", "寺村", "寺田", "いとう", "河村", "原田", "伊藤一樹"];
@@ -55,6 +53,7 @@ var visible = index.replace(/<script[\s\S]*?<\/script>/g, "").replace(/<[^>]+>/g
   ok(visible.indexOf(w) === -1, "画面に「" + w + "」が出ていない");
 });
 ok(visible.indexOf("どこにも送られません") >= 0, "画面に「どこにも送られません」と書いてある");
+ok(visible.indexOf("AIにはこう見えます") >= 0, "整形後に「AIにはこう見えます」と書いてある");
 ok(index.indexOf('id="editor"') > 0 && index.indexOf('id="preview"') > 0, "書く欄と整形後の欄がある");
 ["copy-md", "dl-md", "dl-html", "copy-html", "clear", "samples-btn", "blocks"].forEach(function (id) {
   ok(index.indexOf('id="' + id + '"') > 0, "ボタン " + id + " がある");
