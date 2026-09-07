@@ -26,7 +26,8 @@ var marked = sandbox.marked || sandbox.window.marked;
 var SAMPLES = sandbox.window.MDP_SAMPLES;
 
 console.log("\n== 1. 記入例 ==");
-ok(Array.isArray(SAMPLES) && SAMPLES.length >= 7, "記入例が7つ以上ある", String(SAMPLES && SAMPLES.length));
+ok(Array.isArray(SAMPLES) && SAMPLES.length >= 8, "お手本が8つ以上ある", String(SAMPLES && SAMPLES.length));
+ok(SAMPLES[0].id === "readme" && /README\.md/.test(SAMPLES[0].label), "最初のお手本は README.md（この練習帳の説明書）");
 var ids = {};
 SAMPLES.forEach(function (s) {
   ok(s.id && s.label && s.text, "「" + s.label + "」に id・label・text がある");
