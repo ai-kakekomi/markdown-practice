@@ -127,7 +127,7 @@ ok(app.indexOf("window.print()") > 0, "PDF はブラウザの印刷で保存す�
 ok(/@media print[\s\S]*\.editor-pane[^}]*display: none/.test(css), "印刷のときは書く欄を出さない（整形後だけ）");
 ok(fs.existsSync(path.join(ROOT, "vendor", "html2canvas.min.js")), "html2canvas を同梱している");
 var friend = SAMPLES.filter(function (x) { return x.id === "ai-friend"; })[0];
-ok(!!friend && /人間のふりをしない/.test(friend.text) && /専門の窓口/.test(friend.text), "AIフレンドのお手本に「人間のふりをしない」「専門の窓口」がある");
+ok(!!friend && /ぼくも分からない/.test(friend.text) && /## 心がけ/.test(friend.text), "AIフレンドのお手本に「ぼくも分からない」と「心がけ」がある");
 
 console.log("\n============================================");
 console.log("  成功 " + pass + " 件 ／ 失敗 " + fail + " 件");
