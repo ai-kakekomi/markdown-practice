@@ -1,0 +1,10 @@
+{
+  "name": "markdown-practice",
+  "version": "1.0.0",
+  "description": "AIに伝わりやすい書き方（マークダウン）を、書きながら覚える練習帳",
+  "private": true,
+  "scripts": {
+    "test": "node test/run.js"
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>使い方 | マークダウン練習帳</title>
+<meta name="description" content="マークダウン練習帳の使い方。AIに伝わる書き方の型、記入例の読み方、保存のしかた、自分用に改造する方法。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<style>
+.doc { max-width: 760px; margin: 0 auto; padding: 16px 18px 80px; }
+.doc h1 { font-size: 1.5rem; margin: .6em 0 .3em; }
+.doc h2 { font-size: 1.2rem; margin: 2em 0 .5em; padding-bottom: .25em; border-bottom: 2px solid var(--primary); }
+.doc h3 { font-size: 1.02rem; margin: 1.4em 0 .4em; }
+.doc p, .doc li { font-size: .95rem; }
+.card { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px; margin: 14px 0; box-shadow: var(--shadow); }
+.callout { background: var(--warm-bg-alt); border-left: 4px solid var(--accent-light); padding: 10px 14px; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+.toc { padding-left: 1.4em; }
+.toc a { color: var(--primary); }
+.prompt { position: relative; background: #2C2C2C; color: #F5F0E6; padding: 14px 16px 16px; border-radius: var(--radius-sm); white-space: pre-wrap; font-size: .88rem; line-height: 1.7; font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; margin: 8px 0 18px; overflow-wrap: anywhere; }
+.prompt-head { display: flex; align-items: center; gap: 8px; margin-top: 14px; }
+.prompt-head .t { font-weight: 700; font-size: .9rem; }
+.prompt-head .grow { flex: 1; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.two > div { background: var(--warm-bg); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 10px 12px; font-size: .88rem; }
+.two .h { font-weight: 700; margin-bottom: 4px; }
+.two .ng .h { color: var(--accent); }
+.two .ok .h { color: var(--primary); }
+.two pre { white-space: pre-wrap; margin: 0; font-size: .84rem; font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+@media (max-width: 640px) { .two { grid-template-columns: 1fr; } }
+.back { display: inline-block; margin-top: 24px; }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <a class="brand" href="index.html">マークダウン練習帳<small>使い方</small></a>
+  <span class="grow"></span>
+  <a class="manual" href="index.html">← 練習帳にもどる</a>
+</header>
+
+<main class="doc">
+  <h1>使い方</h1>
+  <p>
+    このページは、<strong>AIに伝わりやすい書き方</strong>を、書きながら覚えるための練習帳です。
+    書いたそばから整形後が見えるので、「#」や「-」がどう見えるかを、試して確かめられます。
+  </p>
+
+  <div class="card">
+    <h2 style="margin-top:0">もくじ</h2>
+    <ol class="toc">
+      <li><a href="#what">なぜマークダウンを練習するのか</a></li>
+      <li><a href="#how">画面の見かた</a></li>
+      <li><a href="#pattern">AIに伝わる書き方の型</a></li>
+      <li><a href="#samples">記入例の読みかた</a></li>
+      <li><a href="#save">保存とコピー</a></li>
+      <li><a href="#data">書いたものはどこに行くか</a></li>
+      <li><a href="#limits">できないこと</a></li>
+      <li><a href="#ask-ai">自分用に変えたい（AIに頼む）</a></li>
+      <li><a href="#license">ライセンスと免責</a></li>
+    </ol>
+  </div>
+
+  <section class="card" id="what">
+    <h2 style="margin-top:0">1. なぜマークダウンを練習するのか</h2>
+    <p>
+      マークダウンは、「#」で見出し、「-」で箇条書き、のように<strong>記号だけで文章の骨組みを表す書きかた</strong>です。
+      ChatGPT や Claude のようなAIは、この書きかたで書かれた文章を、ふつうの文章より正確に読みます。
+      AIの返事も、たいていこの書きかたで返ってきます。
+    </p>
+    <p>
+      逆に、頼みごとを長い文章のかたまりで書くと、AIは「何が目的で、何をしてほしくて、何をしてほしくないか」を自分の想像で埋めます。
+      見出しで分けて箇条書きにするだけで、返ってくるものが安定します。<strong>この練習帳は、その分け方を体で覚えるためのもの</strong>です。
+    </p>
+  </section>
+
+  <section class="card" id="how">
+    <h2 style="margin-top:0">2. 画面の見かた</h2>
+    <ul>
+      <li><strong>書く</strong>：ここに書きます。パソコンでは左、スマホでは下です</li>
+      <li><strong>整形後</strong>：書いたものが、読む人にどう見えるか。パソコンでは右、スマホでは上です</li>
+      <li><strong>記入例</strong>：上に並ぶボタン。押すとお手本が入ります。お手本を書き換えるのが、いちばん早い練習です</li>
+      <li><strong>書き方の早見表</strong>：右上のボタン。記号の一覧が出ます</li>
+    </ul>
+    <p>Tab キーを押すと空白が2つ入ります。箇条書きの階層を下げるときに使います。</p>
+  </section>
+
+  <section class="card" id="pattern">
+    <h2 style="margin-top:0">3. AIに伝わる書き方の型</h2>
+    <p>頼みごとは、次の<strong>4つの見出し</strong>に分けます。全部を埋めなくてもかまいません。</p>
+    <ol>
+      <li><strong>目的</strong>：何のために。誰が読むか</li>
+      <li><strong>やってほしいこと</strong>：箇条書きで</li>
+      <li><strong>やらないでほしいこと</strong>：ここが一番効きます。AIが勝手に足しがちなものを先に止める</li>
+      <li><strong>材料</strong>：日時・場所・名前・値段など、変えてほしくない事実。表にする</li>
+    </ol>
+    <div class="two">
+      <div class="ng"><div class="h">伝わりにくい</div><pre>夏祭りの案内文を作ってください。8月2日の5時から北公園で、盆踊りと屋台があります。高齢の人が多いので分かりやすく。雨のときは公民館。問い合わせは町内会長の山田さんです。</pre></div>
+      <div class="ok"><div class="h">伝わる</div><pre># お願い：夏祭りの案内文
+
+## 目的
+回覧板用。読むのは高齢の方
+
+## やってほしいこと
+- 300字くらい
+- 日時・場所は箇条書きで
+
+## やらないでほしいこと
+- カタカナ語を使わない
+- 決まっていないことを足さない
+
+## 材料
+| 日時 | 8/2(土) 17:00〜 |
+|---|---|
+| 場所 | 北公園（雨天は公民館） |</pre></div>
+    </div>
+    <p style="margin-top:12px">
+      左も間違いではありません。ただ、右のほうが「雨天の扱いをどこまで書くか」「問い合わせ先の電話番号は要るか」のような、
+      AIが迷って勝手に決めるところが減ります。<strong>最後に「返し方」を1行書く</strong>（「案内文だけを返して」など）と、前置きの長い返事も減ります。
+    </p>
+  </section>
+
+  <section class="card" id="samples">
+    <h2 style="margin-top:0">4. 記入例の読みかた</h2>
+    <p>記入例は7つあります。それぞれの頭に、<strong>なぜそう書くと伝わるか</strong>を引用（＞）の形で添えてあります。</p>
+    <ul>
+      <li><strong>基本の書き方</strong>：記号の一覧。まずこれを書き換えて、整形後がどう変わるかを見る</li>
+      <li><strong>AIへのお願い文</strong>：4つの見出しの型。これが本体です</li>
+      <li><strong>CLAUDE.md / AGENTS.md</strong>：Claude Code や Codex のようなAIの道具に、毎回読ませる「決まりごと」のファイル。作業する場所にこの名前で置いておくと、毎回説明しなくてすみます</li>
+      <li><strong>アプリを作ってもらう</strong>／<strong>ホームページを作ってもらう</strong>／<strong>チラシを作ってもらう</strong>：作りものを頼むときの型。「画面にあるもの」「材料」「印刷の条件」のように、AIが想像で埋めがちなところを先に書く</li>
+      <li><strong>議事録をまとめてもらう</strong>：走り書きをそのまま渡して、返し方だけ指定する型</li>
+    </ul>
+    <p>記入例の日時や名前は架空のものです。実在の人や団体とは関係ありません。</p>
+  </section>
+
+  <section class="card" id="save">
+    <h2 style="margin-top:0">5. 保存とコピー</h2>
+    <ul>
+      <li><strong>コピー（AIに貼る）</strong>：書いたものをそのままコピーします。AIの画面に貼って使います。ふだん使うのはこれです</li>
+      <li><strong>.md で保存</strong>：書いたものを、マークダウンのままファイルに保存します。あとで開いて続きを書けます。CLAUDE.md として使うときも、これで保存して名前を変えます</li>
+      <li><strong>.html で保存</strong>：整形後を、ホームページと同じ形のファイルに保存します。ブラウザで開くと、いま見えている整形後がそのまま出ます。人に渡すときに</li>
+      <li><strong>整形後のコピー</strong>：整形後をホームページの形の文字としてコピーします。ホームページを作っている人向け</li>
+    </ul>
+    <p>
+      書いたものは、次にこのページを開いたときも残っています（この端末のブラウザの中に保存されます）。
+      ただし、ブラウザの履歴やデータを消すと、いっしょに消えます。残したいものは「.md で保存」してください。
+    </p>
+  </section>
+
+  <section class="card" id="data">
+    <h2 style="margin-top:0">6. 書いたものはどこに行くか</h2>
+    <p class="callout"><strong>どこにも行きません。</strong>この練習帳は、送信先となるサーバーを持っていません。</p>
+    <ul>
+      <li>整形も保存も、<strong>この端末のブラウザの中</strong>で行われます。インターネットにつながっていなくても動きます</li>
+      <li>書いたものは、この端末のブラウザの保存領域にだけ残ります。<strong>わたしたちAIかけこみ寺には、何も届きません</strong>。受け取る仕組みがないためです</li>
+      <li>「コピー」して<strong>AIの画面に貼ったときだけ</strong>、その内容があなたの使っているAI事業者（OpenAI・Anthropic・Google など）に送られます。これは練習帳の話ではなく、AIに何かを渡すとき全般の話です。仕事の情報を貼るなら、AI側の「学習に使わない」設定やプランを確認してください</li>
+    </ul>
+  </section>
+
+  <section class="card" id="limits">
+    <h2 style="margin-top:0">7. できないこと</h2>
+    <ul>
+      <li><strong>書いた文章の良し悪しは判定しません。</strong>整形後を見て、自分で読み比べる道具です</li>
+      <li>絵や写真は入れられません（アドレスで指定する書きかたは通りますが、この練習帳には画像を置く場所がありません）</li>
+      <li>2台の端末で同じ下書きは見られません。保存はこの端末の中だけです。持ち運ぶときは「.md で保存」してください</li>
+      <li>「整形後」の見た目は、この練習帳が決めた1つの見た目です。AIの画面や他の道具では、色や大きさが変わります。<strong>構造（見出し・箇条書き・表）は変わりません</strong></li>
+    </ul>
+  </section>
+
+  <section class="card" id="ask-ai">
+    <h2 style="margin-top:0">8. 自分用に変えたい（AIに頼む）</h2>
+    <p>
+      この練習帳は、コピーも改造も配り直すのも自由です。記入例を自分の団体のものに差し替える、色を変える、記入例を増やす。
+      どれも<strong>AIに日本語で頼めばやってもらえます</strong>。プログラミングの経験は要りません。この練習帳自体も、そうやって作られました。
+    </p>
+    <p>
+      Claude Code や Codex のような「AIコーディングエージェント」を用意して（用意のしかたは
+      <a href="https://ai-kakekomi.com/apps/customize.html">かけこみアプリを自分用に改造する</a>）、下の文をそのまま貼り付けてください。
+    </p>
+
+    <div class="prompt-head"><span class="t">手順1　手元に持ってくる</span><span class="grow"></span><button type="button" class="js-copy" data-target="p-setup">コピーする</button></div>
+    <pre class="prompt" id="p-setup">https://github.com/ai-kakekomi/markdown-practice を私のパソコンに取得（クローン）して、ブラウザで開いて動かしてください。すでに取得してあれば、最新の状態に更新してください。git など必要な道具が入っていなければ、入れるところから案内してください。</pre>
+
+    <div class="prompt-head"><span class="t">手順2　変えてほしいことを頼む</span><span class="grow"></span><button type="button" class="js-copy" data-target="p-custom">コピーする</button></div>
+    <pre class="prompt" id="p-custom">markdown-practice の記入例に、次のものを1つ足してください。
+
+- ボタンの名前：「〇〇」
+- 中身：（ここに、あなたが練習したい頼みごとの見本を書く）
+- 記入例の頭には、ほかの見本と同じように「なぜこう書くと伝わるか」を引用の形で添えてください
+
+記入例は js/samples.js にまとまっています。既存の見本の書きかた（見出しの分け方、口調）に合わせてください。
+できたら、ブラウザで開いてボタンが増えていることを確かめてください。
+社外秘や個人情報が見本に入っていないか、最後に確認してください。</pre>
+
+    <p>ほかにも、たとえばこんな頼みかたができます。</p>
+    <ul>
+      <li>「整形後の見出しの色を、うちの団体の色（#003366）に変えてください」</li>
+      <li>「記入例を、うちの町内会向けのものだけに絞ってください」</li>
+      <li>「書き方の早見表に、取り消し線の書きかたを足してください」</li>
+    </ul>
+  </section>
+
+  <section class="card" id="license">
+    <h2 style="margin-top:0">9. ライセンスと免責</h2>
+    <p>
+      プログラムは <a href="https://github.com/ai-kakekomi/markdown-practice/blob/main/LICENSE" target="_blank" rel="noopener">MITライセンス</a>（著作権者：AIかけこみ寺 / AI Kakekomi-dera）で公開しています。
+      整形の部品として <a href="https://github.com/markedjs/marked" target="_blank" rel="noopener">marked</a>（MITライセンス）を同梱しています。
+    </p>
+    <p>
+      この練習帳は無保証です。書いたものの内容や、AIに貼った結果について、制作者は責任を負いません。
+      うまくいかないときや「こういう記入例がほしい」は <a href="mailto:info@ai-kakekomi.com">info@ai-kakekomi.com</a> までお知らせください。
+    </p>
+  </section>
+
+  <a class="back" href="index.html">← 練習帳にもどる</a>
+</main>
+
+<div class="toast" id="toast" hidden></div>
+<script>
+/* プロンプトのワンクリックコピー */
+document.addEventListener("click", function (ev) {
+  var btn = ev.target.closest ? ev.target.closest(".js-copy") : null;
+  if (!btn) return;
+  var text = document.getElementById(btn.getAttribute("data-target")).textContent;
+  var t = document.getElementById("toast");
+  function say(m) { t.textContent = m; t.hidden = false; clearTimeout(say.timer); say.timer = setTimeout(function () { t.hidden = true; }, 2600); }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function () { say("コピーしました。AIの画面に貼ってください"); }, function () { say("コピーできませんでした。文章を選んでコピーしてください"); });
+  } else { say("コピーできませんでした。文章を選んでコピーしてください"); }
+});
+</script>
+</body>
+</html>

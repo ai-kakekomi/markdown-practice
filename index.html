@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>マークダウン練習帳 | AIかけこみ寺</title>
+<meta name="description" content="AIに伝わりやすい書き方（マークダウン）を、書きながら覚える練習帳。書いたそばから整形後が見えます。記入例つき。書いたものはどこにも送られません。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="bar">
+  <a class="brand" href="https://ai-kakekomi.com/apps/">マークダウン練習帳<small>AIかけこみ寺</small></a>
+  <span class="grow"></span>
+  <button type="button" id="cheat-btn" aria-expanded="false" aria-controls="cheat">書き方の早見表</button>
+  <a class="manual" href="manual.html">使い方</a>
+</header>
+
+<div class="samples" id="samples" aria-label="記入例">
+  <span class="lbl">記入例：</span>
+</div>
+
+<main class="work">
+  <section class="pane editor-pane" aria-label="書くところ">
+    <div class="pane-head">
+      <span class="name">書く</span>
+      <span class="msg" id="count"></span>
+      <span class="grow"></span>
+      <button type="button" id="copy-md" class="primary">コピー（AIに貼る）</button>
+      <button type="button" id="dl-md">.md で保存</button>
+      <button type="button" id="clear" class="quiet">全部消す</button>
+    </div>
+    <textarea id="editor" spellcheck="false" placeholder="ここに書きます。上の「記入例」を押すと、お手本が入ります。"></textarea>
+  </section>
+
+  <section class="pane preview-pane" aria-label="整形後">
+    <div class="pane-head">
+      <span class="name">整形後</span>
+      <span class="grow"></span>
+      <button type="button" id="copy-html">コピー</button>
+      <button type="button" id="dl-html">.html で保存</button>
+    </div>
+    <div class="preview md is-empty" id="preview" aria-live="polite"></div>
+  </section>
+</main>
+
+<aside class="cheat" id="cheat" aria-label="書き方の早見表">
+  <h2>書き方の早見表 <span class="grow"></span><button type="button" id="cheat-close" class="quiet">閉じる</button></h2>
+  <table>
+    <tr><th>見出し</th><td><code># 大見出し</code>　<code>## 中見出し</code>　<code>### 小見出し</code></td></tr>
+    <tr><th>箇条書き</th><td><code>- 項目</code>（頭にハイフンと空白）。下の階層は頭に空白2つ</td></tr>
+    <tr><th>番号つき</th><td><code>1. 手順</code>（番号は全部 1. でよい）</td></tr>
+    <tr><th>太字</th><td><code>**大事なところ**</code></td></tr>
+    <tr><th>引用・注意</th><td><code>&gt; 引用する文</code></td></tr>
+    <tr><th>横線</th><td><code>---</code>（ハイフン3つだけの行）</td></tr>
+    <tr><th>表</th><td><code>| 項目 | 内容 |</code><br><code>|---|---|</code><br><code>| 日時 | 10/17(土) |</code></td></tr>
+    <tr><th>リンク</th><td><code>[文字](https://アドレス)</code></td></tr>
+    <tr><th>そのまま枠</th><td><code>```</code> の行で挟む（プログラムや、そのまま渡したい文章）</td></tr>
+    <tr><th>段落を分ける</th><td>あいだに空の行を1つ入れる</td></tr>
+  </table>
+  <p class="tip">AIに伝わる型：「目的」「やってほしいこと」「やらないでほしいこと」「材料」の4つの見出しに分ける。記入例「AIへのお願い文」を見てください。</p>
+</aside>
+
+<footer class="foot">
+  <p><strong>書いたものは、どこにも送られません。</strong>この端末のブラウザの中にだけ残ります（次に開いたときも続きから書けます）。ブラウザの履歴やデータを消すと、書いたものも消えるので、残したいものは「.md で保存」してください。</p>
+  <p>非営利団体 <a href="https://ai-kakekomi.com">AIかけこみ寺</a> が作りました。プログラムはMITライセンスで公開しています（<a href="https://github.com/ai-kakekomi/markdown-practice" target="_blank" rel="noopener">GitHub</a>）。自分用に変えたい方は <a href="manual.html#ask-ai">使い方の「AIに頼む」</a> へ。</p>
+</footer>
+
+<div class="toast" id="toast" hidden></div>
+
+<script src="vendor/marked.min.js"></script>
+<script src="js/samples.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

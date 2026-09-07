@@ -1,0 +1,42 @@
+MIT License
+
+Copyright (c) 2026 AIかけこみ寺 / AI Kakekomi-dera
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+--------------------------------------------------------------------------
+食品表示に関する注意（重要）
+--------------------------------------------------------------------------
+
+本ソフトウェアは食品表示の作成を補助する参考情報を提供するものであり、
+法律上の助言、行政上の確認、または食品表示基準への適合の証明ではありません。
+本ソフトウェアに含まれるルールデータは、本リリース時点で専門家による監修を
+受けていません。
+
+食品表示の内容および適法性についての責任は、当該食品の表示を行う
+食品関連事業者にあります。表示内容の最終確認は必ず食品表示基準および
+消費者庁の最新ガイドラインで行ってください。
+
+--------------------------------------------------------------------------
+同梱している第三者ソフトウェア
+--------------------------------------------------------------------------
+
+vendor/js-yaml.min.js
+  js-yaml — Copyright (C) 2011-2015 by Vitaly Puzrin
+  MIT License  https://github.com/nodeca/js-yaml/blob/master/LICENSE
