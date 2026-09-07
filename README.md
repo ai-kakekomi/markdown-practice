@@ -13,6 +13,7 @@ AIに伝わりやすい書き方（マークダウン）を、書きながら覚
   見本の文字が選ばれた状態になるので、そのまま打てば置き換わる。白紙から組み上げる
 - お手本 8つ（README.md（この練習帳の説明書）／基本の書き方／AIへのお願い文／CLAUDE.md・AGENTS.md／
   アプリ・ホームページ・チラシを作ってもらう／議事録）
+- チャレンジ 6つ（日記／買い物メモ／自己紹介／AIへのお願い／CLAUDE.md／議事録）。書いた文字が条件を満たすとその場でチェックが付く
 - 書いたものをコピー（AIに貼る）、.md で保存、整形後を .html で保存・コピー
 - 書きかけは、この端末のブラウザの中に残る（次に開いたとき続きから）
 
@@ -40,6 +41,7 @@ start index.html         # Windows
 | `manual.html` | 使い方（情報の流れ、AIに頼んで改造する方法、免責） |
 | `js/app.js` | 整形・保存・書き出し |
 | `js/samples.js` | お手本。増やすならここ |
+| `js/challenges.js` | チャレンジ課題と、その判定 |
 | `css/style.css` | 見た目。整形後の見た目（`.md`）は書き出すHTMLにも写される |
 | `vendor/marked.min.js` | 整形の部品 [marked](https://github.com/markedjs/marked) v15（MIT） |
 | `test/run.js` | テスト |

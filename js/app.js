@@ -100,11 +100,62 @@
     var len = b.sel ? b.sel.length : 0;
     t.focus();
     t.setSelectionRange(at, at + len);
-    paint(); saveSoon();
+    paint(); saveSoon(); chPaint();
     /* 入れた場所が見えるように */
     var line = t.value.slice(0, at).split("\n").length;
     t.scrollTop = Math.max(0, (line - 4) * 27);
     el.preview.scrollTop = el.preview.scrollHeight;
+  }
+
+  /* ---------- チャレンジ ----------
+     小さなお題。書いた文字が条件を満たすとチェックが付き、全部付いたらクリア。
+     クリアした課題はこのブラウザに覚えておく */
+  var CH_KEY = "mdp.challenge.v1";
+  var chIndex = 0, chCleared = {}, chOpen = true;
+  function chList() { return window.MDP_CHALLENGES || []; }
+  function chLoad() {
+    try {
+      var st = JSON.parse(localStorage.getItem(CH_KEY) || "{}");
+      chIndex = st.index || 0; chCleared = st.cleared || {}; chOpen = (st.open !== false);
+    } catch (e) {}
+    if (chIndex >= chList().length) chIndex = 0;
+  }
+  function chSave() {
+    try { localStorage.setItem(CH_KEY, JSON.stringify({ index: chIndex, cleared: chCleared, open: chOpen })); } catch (e) {}
+  }
+  function chPaint() {
+    var list = chList();
+    el.challenge.hidden = !chOpen || !list.length;
+    $("challenge-btn").setAttribute("aria-expanded", chOpen ? "true" : "false");
+    if (el.challenge.hidden) return;
+    var c = list[chIndex];
+    $("ch-no").textContent = (chIndex + 1) + "/" + list.length;
+    $("ch-title").textContent = c.title;
+    $("ch-hint").textContent = c.hint;
+    var md = el.editor.value;
+    var box = $("ch-checks");
+    box.innerHTML = "";
+    var all = true;
+    c.checks.forEach(function (k) {
+      var li = document.createElement("li");
+      var okk = false;
+      try { okk = !!k.test(md); } catch (e) { okk = false; }
+      li.textContent = k.label;
+      li.classList.toggle("is-ok", okk);
+      if (!okk) all = false;
+      box.appendChild(li);
+    });
+    var was = el.challenge.classList.contains("is-clear");
+    el.challenge.classList.toggle("is-clear", all);
+    if (all && !was && md.trim()) {
+      if (!chCleared[c.id]) { chCleared[c.id] = true; chSave(); }
+      toast("クリア！　「›」で次の課題へ");
+    }
+  }
+  function chMove(d) {
+    var n = chList().length; if (!n) return;
+    chIndex = (chIndex + d + n) % n;
+    chSave(); chPaint();
   }
 
   /* ---------- 元にもどす（1回だけ） ----------
@@ -131,7 +182,7 @@
     el.editor.value = s.text;
     try { localStorage.setItem(SAMPLE_KEY, s.id); } catch (e) {}
     markSample(s.id);
-    paint(); saveSoon();
+    paint(); saveSoon(); chPaint();
     el.editor.scrollTop = 0; el.preview.scrollTop = 0;
     toast("お手本「" + s.label + "」を入れました。自由に書き換えてください");
   }
@@ -215,12 +266,13 @@
     var t = el.editor, s = t.selectionStart, n = t.selectionEnd;
     t.value = t.value.slice(0, s) + "  " + t.value.slice(n);
     t.selectionStart = t.selectionEnd = s + 2;
-    paint(); saveSoon();
+    paint(); saveSoon(); chPaint();
   }
 
   /* ---------- 起動 ---------- */
   function boot() {
-    ["editor", "preview", "samples", "blocks", "count", "toast"].forEach(function (k) { el[k] = $(k); });
+    ["editor", "preview", "samples", "blocks", "count", "toast", "challenge"].forEach(function (k) { el[k] = $(k); });
+    chLoad();
     drawBlocks();
     drawSamples();
 
@@ -232,8 +284,13 @@
       try { markSample(localStorage.getItem(SAMPLE_KEY)); } catch (e) {}
     }
     paint();
+    chPaint();
 
-    el.editor.addEventListener("input", function () { paint(); saveSoon(); });
+    el.editor.addEventListener("input", function () { paint(); saveSoon(); chPaint(); });
+    $("ch-prev").addEventListener("click", function () { chMove(-1); });
+    $("ch-next").addEventListener("click", function () { chMove(1); });
+    $("ch-close").addEventListener("click", function () { chOpen = false; chSave(); chPaint(); });
+    $("challenge-btn").addEventListener("click", function () { chOpen = !chOpen; chSave(); chPaint(); });
     el.editor.addEventListener("keydown", tabKey);
 
     $("copy-md").addEventListener("click", function () { copyText(el.editor.value, "書いたものをコピーしました。AIの画面に貼ってください"); });
@@ -245,14 +302,14 @@
       remember();
       el.editor.value = ""; markSample(null);
       try { localStorage.removeItem(STORE_KEY); localStorage.removeItem(SAMPLE_KEY); } catch (e) {}
-      paint(); el.editor.focus();
+      paint(); chPaint(); el.editor.focus();
       toast("全部消しました。「元にもどす」で戻せます");
     });
     $("undo").addEventListener("click", function () {
       if (undoText === null) { toast("戻すものがありません"); return; }
       var now = el.editor.value;
       el.editor.value = undoText; undoText = now;
-      paint(); saveSoon(); el.editor.focus();
+      paint(); saveSoon(); chPaint(); el.editor.focus();
       toast("元にもどしました");
     });
   }

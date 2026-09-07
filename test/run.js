@@ -69,8 +69,26 @@ var manual = read("manual.html");
 });
 ok(manual.indexOf("github.com/ai-kakekomi/markdown-practice") >= 0, "使い方のプロンプトにリポジトリのアドレスがある");
 
-console.log("\n== 2.5 ブロック ==");
+console.log("\n== 2.3 チャレンジ ==");
 var app = read("js/app.js");
+vm.runInContext(read("js/challenges.js"), sandbox);
+var CH = sandbox.window.MDP_CHALLENGES;
+ok(Array.isArray(CH) && CH.length >= 5, "チャレンジが5つ以上ある", String(CH && CH.length));
+CH.forEach(function (c) {
+  ok(c.id && c.title && c.hint && c.checks.length >= 3, "「" + c.title + "」に id・title・hint・チェック3つ以上がある");
+  c.checks.forEach(function (k) { ok(typeof k.test === "function" && k.label, "「" + c.title + "」のチェック「" + k.label + "」が関数"); });
+  ok(c.checks.every(function (k) { return k.test("") === false; }), "「" + c.title + "」は白紙では何も付かない");
+});
+var chById = {}; CH.forEach(function (c) { chById[c.id] = c; });
+var diary = "# 9/7 の日記\n\n今日はプリンタが届いた。\n設定に30分かかった。\n\n- よかったこと1\n- よかったこと2\n- よかったこと3\n\n**明日は承諾書を印刷する**\n";
+ok(chById.diary.checks.every(function (k) { return k.test(diary); }), "日記の見本でチャレンジ「日記」がクリアになる");
+ok(!chById.diary.checks[2].test("- a\n- b\n"), "箇条書きが2つでは付かない");
+var ask = "# お願い：案内文\n\n## 目的\n回覧板\n\n## やってほしいこと\n- 300字\n\n## やらないでほしいこと\n- 絵文字\n\n## 材料\n| 日時 | 8/2 |\n|---|---|\n";
+ok(chById.ask.checks.every(function (k) { return k.test(ask); }), "4つの見出しの型でチャレンジ「AIにお願い」がクリアになる");
+ok(index.indexOf('id="challenge"') > 0 && index.indexOf('id="ch-next"') > 0, "チャレンジのカードと次へボタンがある");
+ok(app.indexOf("chPaint()") > 0, "書くたびにチャレンジを判定する");
+
+console.log("\n== 2.5 ブロック ==");
 var blocksSrc = app.match(/var BLOCKS = \[[\s\S]*?\n  \];/)[0];
 var BLOCKS = new Function(blocksSrc + " return BLOCKS;")();
 ok(BLOCKS.length >= 10, "ブロックが10個以上ある", String(BLOCKS.length));

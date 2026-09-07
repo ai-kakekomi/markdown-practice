@@ -15,6 +15,7 @@
 <header class="bar">
   <a class="brand" href="https://ai-kakekomi.com/apps/">マークダウン練習帳<small>AIかけこみ寺</small></a>
   <span class="grow"></span>
+  <button type="button" id="challenge-btn" aria-expanded="true" aria-controls="challenge">チャレンジ</button>
   <a class="manual" href="manual.html">使い方</a>
 </header>
 
@@ -35,6 +36,18 @@
     </div>
     <div class="blocks" id="blocks" aria-label="ブロックを入れる">
       <span class="lbl">押すと入る：</span>
+    </div>
+    <div class="challenge" id="challenge" aria-live="polite">
+      <div class="ch-head">
+        <span class="ch-tag">チャレンジ <span id="ch-no"></span></span>
+        <span class="ch-title" id="ch-title"></span>
+        <span class="grow"></span>
+        <button type="button" id="ch-prev" class="quiet" aria-label="前の課題">‹</button>
+        <button type="button" id="ch-next" class="quiet" aria-label="次の課題">›</button>
+        <button type="button" id="ch-close" class="quiet" aria-label="閉じる">✕</button>
+      </div>
+      <p class="ch-hint" id="ch-hint"></p>
+      <ul class="ch-checks" id="ch-checks"></ul>
     </div>
     <textarea id="editor" spellcheck="false" placeholder="まず「見出し」を押してみてください。押したものが、そのまま右（スマホでは上）に出ます。"></textarea>
   </section>
@@ -60,6 +73,7 @@
 
 <script src="vendor/marked.min.js"></script>
 <script src="js/samples.js"></script>
+<script src="js/challenges.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>
