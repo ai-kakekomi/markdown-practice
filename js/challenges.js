@@ -68,6 +68,19 @@ window.MDP_CHALLENGES = [
   },
 
   {
+    id: "ai-friend",
+    title: "AIフレンドを作ろう",
+    hint: "見出しに名前、小見出しで「呼び方」「文体・口調」「性格」。それぞれ箇条書きで。お手本「AIフレンドを作る」を写して、自分の言葉に置き換えてもいいです。",
+    checks: [
+      { label: "見出し（#）にAIの名前", test: function (md) { return /^#\s+\S/m.test(md); } },
+      { label: "## 呼び方（箇条書きつき）", test: function (md) { return /^##\s*呼び方[\s\S]*?^\s*-\s+\S/m.test(md); } },
+      { label: "## 文体・口調（箇条書きつき）", test: function (md) { return /^##\s*文体[\s\S]*?^\s*-\s+\S/m.test(md); } },
+      { label: "## 性格（箇条書き2つ以上）", test: function (md) { var m = md.match(/^##\s*性格([\s\S]*?)(?=^##|(?![\s\S]))/m); return !!m && (m[1].match(/^\s*-\s+\S/gm) || []).length >= 2; } },
+      { label: "太字（**）で名前を強く", test: function (md) { return /\*\*[^*\n]+\*\*/.test(md); } }
+    ]
+  },
+
+  {
     id: "minutes",
     title: "走り書きを議事録にしよう",
     hint: "メモを「そのまま枠」に入れて、返し方を番号つきで指定します。決まったことは表に。",

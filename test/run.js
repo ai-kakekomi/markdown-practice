@@ -85,6 +85,8 @@ ok(chById.diary.checks.every(function (k) { return k.test(diary); }), "日記の
 ok(!chById.diary.checks[2].test("- a\n- b\n"), "箇条書きが2つでは付かない");
 var ask = "# お願い：案内文\n\n## 目的\n回覧板\n\n## やってほしいこと\n- 300字\n\n## やらないでほしいこと\n- 絵文字\n\n## 材料\n| 日時 | 8/2 |\n|---|---|\n";
 ok(chById.ask.checks.every(function (k) { return k.test(ask); }), "4つの見出しの型でチャレンジ「AIにお願い」がクリアになる");
+var fr = SAMPLES.filter(function (x) { return x.id === "ai-friend"; })[0];
+ok(chById["ai-friend"].checks.every(function (k) { return k.test(fr.text); }), "お手本「AIフレンドを作る」をそのまま入れるとチャレンジ「AIフレンド」がクリアになる");
 ok(index.indexOf('id="challenge"') > 0 && index.indexOf('id="ch-next"') > 0, "チャレンジのカードと次へボタンがある");
 ok(app.indexOf("chPaint()") > 0, "書くたびにチャレンジを判定する");
 
