@@ -105,7 +105,7 @@ button[disabled] { opacity: .4; cursor: default; }
 .samples button { font-size: .8rem; padding: 6px 12px; min-height: 36px; flex: 0 0 auto; }
 .samples button.is-on { background: var(--primary-pale); border-color: var(--primary); font-weight: 700; }
 
-/* ---------- 本体：スマホは上に整形後、下に入力 ----------
+/* ---------- 本体：スマホは上に入力、下に整形後 ----------
    スマホでは画面の高さに押し込まない。押し込むと、下半分に入力欄の見出し・
    ブロックの列・チャレンジのカードが積み上がって、打つ場所が消えた（実際に踏んだ）。
    整形後は高さを抑えて中でスクロール、書く欄は広めに取り、ページ全体は普通に流す */
@@ -124,8 +124,10 @@ button[disabled] { opacity: .4; cursor: default; }
 .pane-head button { min-height: 32px; padding: 4px 10px; font-size: .78rem; }
 .pane-head .msg { font-size: .76rem; color: var(--primary); }
 
-.preview-pane { order: 1; border-bottom: 3px solid var(--line); }
-.editor-pane { order: 2; }
+/* スマホは書く欄が上、整形後が下（書いて、下に流れて見る）。
+   最初は逆にしていたが、ページを縦に流す作りに変えたら、書く欄が上のほうが自然だった */
+.editor-pane { order: 1; border-bottom: 3px solid var(--line); }
+.preview-pane { order: 2; }
 
 textarea#editor {
   flex: 1; min-height: 0; width: 100%; resize: none;
@@ -197,8 +199,7 @@ textarea#editor::placeholder { color: var(--text-mute); }
   }
   .preview-pane .preview { max-height: none; }
   textarea#editor { min-height: 0; }
-  .editor-pane { order: 1; border-right: 3px solid var(--line); }
-  .preview-pane { order: 2; border-bottom: 0; }
+  .editor-pane { border-right: 3px solid var(--line); border-bottom: 0; }
 }
 
 /* ---------- 画像に書き出すときの一時的な置き場 ---------- */

@@ -60,8 +60,8 @@ ok(index.indexOf('id="editor"') > 0 && index.indexOf('id="preview"') > 0, "書�
   ok(index.indexOf('id="' + id + '"') > 0, "ボタン " + id + " がある");
 });
 var css = read("css/style.css");
-ok(/\.preview-pane\s*\{\s*order:\s*1/.test(css), "スマホでは整形後が上（order: 1）");
-ok(/@media \(min-width: 900px\)[\s\S]*\.editor-pane\s*\{\s*order:\s*1/.test(css), "画面が広いときは書く欄が左（order: 1）");
+ok(/\.editor-pane\s*\{\s*order:\s*1/.test(css), "スマホでは書く欄が上（order: 1）");
+ok(/@media \(min-width: 900px\)[\s\S]*\.editor-pane\s*\{[^}]*border-right/.test(css), "画面が広いときは書く欄が左");
 ok(/grid-template-columns:\s*1fr 1fr/.test(css), "画面が広いときは左右に分かれる");
 ok(/\.work \{ display: flex; flex-direction: column; \}/.test(css), "スマホでは画面の高さに押し込まず、縦に流す");
 ok(/textarea#editor \{ min-height: 52dvh; \}/.test(css), "スマホの書く欄は画面の半分以上の高さがある");
