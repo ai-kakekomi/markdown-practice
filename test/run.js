@@ -91,6 +91,7 @@ var fr = SAMPLES.filter(function (x) { return x.id === "ai-friend"; })[0];
 ok(chById["ai-friend"].checks.every(function (k) { return k.test(fr.text); }), "お手本「AIフレンドを作る」をそのまま入れるとチャレンジ「AIフレンド」がクリアになる");
 ok(index.indexOf('id="challenge"') > 0 && index.indexOf('id="ch-next"') > 0, "チャレンジのカードと次へボタンがある");
 ok(app.indexOf("chPaint()") > 0, "書くたびにチャレンジを判定する");
+ok(/chOpen = false;/.test(app) && /id="challenge"[^>]*hidden/.test(index), "チャレンジは最初は閉じている（右上のボタンで開く）");
 
 console.log("\n== 2.5 ブロック ==");
 var blocksSrc = app.match(/var BLOCKS = \[[\s\S]*?\n  \];/)[0];

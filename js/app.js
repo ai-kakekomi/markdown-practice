@@ -111,12 +111,12 @@
      小さなお題。書いた文字が条件を満たすとチェックが付き、全部付いたらクリア。
      クリアした課題はこのブラウザに覚えておく */
   var CH_KEY = "mdp.challenge.v1";
-  var chIndex = 0, chCleared = {}, chOpen = true;
+  var chIndex = 0, chCleared = {}, chOpen = false;   /* 最初は閉じておく。右上の「チャレンジ」で開く */
   function chList() { return window.MDP_CHALLENGES || []; }
   function chLoad() {
     try {
       var st = JSON.parse(localStorage.getItem(CH_KEY) || "{}");
-      chIndex = st.index || 0; chCleared = st.cleared || {}; chOpen = (st.open !== false);
+      chIndex = st.index || 0; chCleared = st.cleared || {}; chOpen = (st.open === true);
     } catch (e) {}
     if (chIndex >= chList().length) chIndex = 0;
   }

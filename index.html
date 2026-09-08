@@ -15,7 +15,7 @@
 <header class="bar">
   <a class="brand" href="https://ai-kakekomi.com/apps/">マークダウン練習帳<small>AIかけこみ寺</small></a>
   <span class="grow"></span>
-  <button type="button" id="challenge-btn" aria-expanded="true" aria-controls="challenge">チャレンジ</button>
+  <button type="button" id="challenge-btn" aria-expanded="false" aria-controls="challenge">チャレンジ</button>
   <a class="manual" href="manual.html">使い方</a>
 </header>
 
@@ -37,7 +37,7 @@
     <div class="blocks" id="blocks" aria-label="ブロックを入れる">
       <span class="lbl">押すと入る：</span>
     </div>
-    <div class="challenge" id="challenge" aria-live="polite">
+    <div class="challenge" id="challenge" aria-live="polite" hidden>
       <div class="ch-head">
         <span class="ch-tag">チャレンジ <span id="ch-no"></span></span>
         <span class="ch-title" id="ch-title"></span>
