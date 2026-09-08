@@ -105,15 +105,14 @@ button[disabled] { opacity: .4; cursor: default; }
 .samples button { font-size: .8rem; padding: 6px 12px; min-height: 36px; flex: 0 0 auto; }
 .samples button.is-on { background: var(--primary-pale); border-color: var(--primary); font-weight: 700; }
 
-/* ---------- 本体：スマホは上に整形後、下に入力 ---------- */
-.work {
-  display: grid;
-  grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
-  height: calc(100dvh - var(--bar-h) - 53px);
-  min-height: 480px;
-}
+/* ---------- 本体：スマホは上に整形後、下に入力 ----------
+   スマホでは画面の高さに押し込まない。押し込むと、下半分に入力欄の見出し・
+   ブロックの列・チャレンジのカードが積み上がって、打つ場所が消えた（実際に踏んだ）。
+   整形後は高さを抑えて中でスクロール、書く欄は広めに取り、ページ全体は普通に流す */
+.work { display: flex; flex-direction: column; }   /* order で上下を入れ替えるため flex */
 /* min-width: 0 が無いと、横に流れるボタン列が列の幅を押し広げて、右の欄がつぶれる */
 .pane { display: flex; flex-direction: column; min-height: 0; min-width: 0; }
+.preview-pane .preview { max-height: 38dvh; }
 .pane-head {
   flex-wrap: wrap;
   display: flex; align-items: center; gap: 8px;
@@ -135,6 +134,7 @@ textarea#editor {
   font: 16px/1.7 ui-monospace, "SF Mono", Menlo, Consolas, "Yu Gothic", monospace;
   color: var(--text); background: #FFFDF8;
 }
+textarea#editor { min-height: 52dvh; }   /* スマホ。上の flex:1 の指定より後に置いて効かせる */
 textarea#editor:focus { background: #fff; }
 textarea#editor::placeholder { color: var(--text-mute); }
 
@@ -190,10 +190,13 @@ textarea#editor::placeholder { color: var(--text-mute); }
 /* ---------- 画面が広いとき：左に入力、右に整形後 ---------- */
 @media (min-width: 900px) {
   .work {
-    grid-template-rows: none;
+    display: grid;
     grid-template-columns: 1fr 1fr;
     height: calc(100dvh - var(--bar-h) - 53px);
+    min-height: 480px;
   }
+  .preview-pane .preview { max-height: none; }
+  textarea#editor { min-height: 0; }
   .editor-pane { order: 1; border-right: 3px solid var(--line); }
   .preview-pane { order: 2; border-bottom: 0; }
 }
