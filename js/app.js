@@ -191,9 +191,112 @@
     for (var i = 0; i < bs.length; i++) { bs[i].classList.toggle("is-on", bs[i].getAttribute("data-sample") === id); }
   }
 
+  /* ---------- 自分のファイルを開く・上書き保存 ----------
+     TODO.md のような手元のファイルを、この画面で直に直せるようにする。
+     Chrome / Edge はファイルを「つかんだまま」にできるので、上書き保存が効く（Ctrl+S でも）。
+     それ以外のブラウザは、開くのは「ファイルを選ぶ」、保存は「.md で保存」（ダウンロード）に倒す。
+     つかんだファイルはこのブラウザの中（IndexedDB）に覚えておき、次に開いたとき
+     「開き直す」を1回押せば続きから直せる（許可の確認が要るので自動では開かない） */
+  var fileHandle = null, fileName = "", fileDirty = false;
+  var canGrab = typeof window.showOpenFilePicker === "function";
+  var PICK_TYPES = [{ description: "マークダウン", accept: { "text/markdown": [".md", ".markdown", ".txt"] } }];
+
+  function paintFile() {
+    el.fileName.hidden = !fileName;
+    el.fileName.textContent = fileName;
+    el.fileName.classList.toggle("is-dirty", fileDirty);
+    el.saveFile.hidden = !fileHandle;
+    document.title = fileName ? (fileDirty ? "● " : "") + fileName + " | マークダウン練習帳" : "マークダウン練習帳";
+  }
+  function markDirty() { if (fileName && !fileDirty) { fileDirty = true; paintFile(); } }
+
+  function handleStore(mode, cb) {
+    try {
+      var req = indexedDB.open("mdp", 1);
+      req.onupgradeneeded = function () { req.result.createObjectStore("kv"); };
+      req.onsuccess = function () {
+        var tx = req.result.transaction("kv", mode);
+        cb(tx.objectStore("kv"));
+      };
+      req.onerror = function () { cb(null); };
+    } catch (e) { cb(null); }
+  }
+  function rememberHandle(h) {
+    handleStore("readwrite", function (st) { if (st) { if (h) st.put(h, "file"); else st.delete("file"); } });
+  }
+  function recallHandle(cb) {
+    handleStore("readonly", function (st) {
+      if (!st) return cb(null);
+      var g = st.get("file");
+      g.onsuccess = function () { cb(g.result || null); };
+      g.onerror = function () { cb(null); };
+    });
+  }
+
+  function useFileText(text, name, handle) {
+    remember();
+    fileHandle = handle || null; fileName = name; fileDirty = false;
+    el.editor.value = text;
+    markSample(null);
+    paint(); saveSoon(); chPaint(); paintFile();
+    el.editor.scrollTop = 0; el.preview.scrollTop = 0;
+    toast(name + " を開きました" + (handle ? "。直したら「上書き保存」（Ctrl+S）" : "。保存は「.md で保存」から"));
+  }
+
+  function openFile() {
+    if (canGrab) {
+      window.showOpenFilePicker({ types: PICK_TYPES, multiple: false }).then(function (hs) {
+        var h = hs[0];
+        return h.getFile().then(function (f) { return f.text(); }).then(function (t) {
+          useFileText(t, h.name, h);
+          rememberHandle(h);
+        });
+      }).catch(function (e) { if (e && e.name !== "AbortError") toast("開けませんでした"); });
+      return;
+    }
+    var input = document.createElement("input");
+    input.type = "file"; input.accept = ".md,.markdown,.txt,text/markdown,text/plain";
+    input.addEventListener("change", function () {
+      var f = input.files && input.files[0];
+      if (!f) return;
+      var r = new FileReader();
+      r.onload = function () { useFileText(String(r.result || ""), f.name, null); };
+      r.readAsText(f);
+    });
+    input.click();
+  }
+
+  function saveFile() {
+    if (!fileHandle) { download(fileBase() + ".md", el.editor.value, "text/markdown"); return; }
+    fileHandle.createWritable().then(function (w) {
+      return w.write(el.editor.value).then(function () { return w.close(); });
+    }).then(function () {
+      fileDirty = false; paintFile();
+      toast(fileName + " に上書き保存しました");
+    }).catch(function () { toast("保存できませんでした。もう一度「自分のファイルを開く」から開いてください"); });
+  }
+
+  /* 前回つかんだファイルがあれば、開き直すボタンを出す */
+  function offerReopen() {
+    if (!canGrab) return;
+    recallHandle(function (h) {
+      if (!h || !h.name) return;
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "quiet"; b.textContent = h.name + " を開き直す";
+      b.addEventListener("click", function () {
+        h.requestPermission({ mode: "readwrite" }).then(function (p) {
+          if (p !== "granted") { toast("許可されなかったので開けません"); return; }
+          return h.getFile().then(function (f) { return f.text(); }).then(function (t) { useFileText(t, h.name, h); b.remove(); });
+        }).catch(function () { toast("開けませんでした"); });
+      });
+      el.openFile.insertAdjacentElement("afterend", b);
+    });
+  }
+
   /* ---------- 書き出し ---------- */
   /* 保存するファイルの名前。最初の見出しから作る。無ければ日付 */
   function fileBase() {
+    if (fileName) return fileName.replace(/\.[^.]+$/, "");
     var m = el.editor.value.match(/^#\s+(.+)$/m);
     var name = m ? m[1].trim() : "";
     name = name.replace(/[\\\/:*?"<>|]/g, "").slice(0, 40);
@@ -311,6 +414,7 @@
   /* ---------- 起動 ---------- */
   function boot() {
     ["editor", "preview", "samples", "blocks", "count", "toast", "challenge"].forEach(function (k) { el[k] = $(k); });
+    el.fileName = $("file-name"); el.openFile = $("open-file"); el.saveFile = $("save-file");
     chLoad();
     drawBlocks();
     drawSamples();
@@ -325,7 +429,13 @@
     paint();
     chPaint();
 
-    el.editor.addEventListener("input", function () { paint(); saveSoon(); chPaint(); });
+    el.editor.addEventListener("input", function () { paint(); saveSoon(); chPaint(); markDirty(); });
+    el.openFile.addEventListener("click", openFile);
+    el.saveFile.addEventListener("click", saveFile);
+    document.addEventListener("keydown", function (e) {
+      if ((e.ctrlKey || e.metaKey) && (e.key === "s" || e.key === "S")) { e.preventDefault(); saveFile(); }
+    });
+    offerReopen();
     $("ch-prev").addEventListener("click", function () { chMove(-1); });
     $("ch-next").addEventListener("click", function () { chMove(1); });
     $("ch-close").addEventListener("click", function () { chOpen = false; chSave(); chPaint(); });

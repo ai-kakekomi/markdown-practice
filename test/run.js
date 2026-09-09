@@ -122,7 +122,8 @@ ok(app.indexOf("URL.createObjectURL") > 0 && app.indexOf("a.download") > 0, ".md
 ok(!/fetch\(|XMLHttpRequest|navigator\.sendBeacon/.test(app), "どこにも送信していない");
 /* ファイル名は最初の見出しから。危ない文字は落とす */
 var fileBaseSrc = app.match(/function fileBase\(\) \{[\s\S]*?\n  \}/)[0];
-var fb = new Function("el", "return (" + fileBaseSrc.replace("function fileBase()", "function ()") + ")();");
+/* fileName は「自分のファイルを開く」で使う変数。切り出した関数からも見えるよう空で渡す */
+var fb = new Function("el", "var fileName = \"\"; return (" + fileBaseSrc.replace("function fileBase()", "function ()") + ")();");
 ok(fb({ editor: { value: "# お願い：夏祭り/案内*文\n本文" } }) === "お願い：夏祭り案内文", "ファイル名は最初の見出しから、危ない文字を落として作る");
 ok(/^markdown-\d{8}$/.test(fb({ editor: { value: "見出しなし" } })), "見出しが無ければ日付の名前になる");
 var out = marked.parse("# 題\n\n- a\n- b\n\n| x | y |\n|---|---|\n| 1 | 2 |", { gfm: true, breaks: true });

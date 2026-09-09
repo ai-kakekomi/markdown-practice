@@ -123,6 +123,8 @@ button[disabled] { opacity: .4; cursor: default; }
 .pane-head .grow { flex: 1; }
 .pane-head button { min-height: 32px; padding: 4px 10px; font-size: .78rem; }
 .pane-head .msg { font-size: .76rem; color: var(--primary); }
+.pane-head .file-name { color: var(--text); font-weight: 700; }
+.pane-head .file-name.is-dirty::before { content: "● "; color: var(--accent); }
 
 /* スマホは書く欄が上、整形後が下（書いて、下に流れて見る）。
    最初は逆にしていたが、ページを縦に流す作りに変えたら、書く欄が上のほうが自然だった */
