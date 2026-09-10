@@ -168,6 +168,20 @@ textarea#editor::placeholder { color: var(--text-mute); }
 .md code { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: .9em; background: #F1EDE4; padding: .1em .4em; border-radius: 5px; }
 .md pre { background: #2C2C2C; color: #F5F0E6; padding: .9em 1em; border-radius: var(--radius-sm); overflow-x: auto; font-size: .88em; line-height: 1.6; }
 .md pre code { background: transparent; padding: 0; color: inherit; }
+/* そのまま枠の右上の「コピー」（画面の中だけ。書き出すHTMLには入らない） */
+.md .codebox { position: relative; }
+.md .codebox pre { padding-top: 2.2em; }
+.md .codebox .copy-code {
+  position: absolute; top: .5em; right: .6em;
+  min-height: 0; padding: 2px 10px; font-size: .74rem;
+  border-color: rgba(255,255,255,.35); background: rgba(255,255,255,.12); color: #F5F0E6;
+}
+.md .codebox .copy-code:hover { background: rgba(255,255,255,.28); }
+/* チェックボックス。押せるようにし、済んだものは打ち消し線 */
+.md input[type=checkbox] { width: 1.05em; height: 1.05em; margin: 0 .35em 0 0; vertical-align: -.15em; accent-color: var(--primary); cursor: pointer; }
+.md li:has(> input[type=checkbox]) { list-style: none; margin-left: -1.3em; }
+.md li:has(> input[type=checkbox]:checked) { text-decoration: line-through; color: var(--text-mute); }
+.md li:has(> input[type=checkbox]:checked) > ul, .md li:has(> input[type=checkbox]:checked) > ol { text-decoration: none; color: var(--text); }
 .md table { border-collapse: collapse; width: 100%; margin: .8em 0; font-size: .95em; display: block; overflow-x: auto; }
 .md th, .md td { border: 1px solid var(--line); padding: .45em .7em; text-align: left; vertical-align: top; }
 .md th { background: var(--warm-bg-alt); font-weight: 700; }

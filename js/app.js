@@ -29,9 +29,69 @@
 
   function paint() {
     var md = el.editor.value;
+    var keepScroll = el.preview.scrollTop;
     el.preview.innerHTML = md.trim() ? render(md) : "<p>書いたものが、ここに整形されて出ます。<br>「押すと入る」のボタンを1つずつ押して、組み上げてみてください。</p>";
+    decorate();
+    el.preview.scrollTop = keepScroll;
     el.preview.classList.toggle("is-empty", !md.trim());
     el.count.textContent = md.length ? md.length.toLocaleString("ja-JP") + " 文字" : "";
+  }
+
+  /* 整形後に、画面の中だけで使う仕掛けを足す（書き出すHTMLには入れない）。
+     - そのまま枠の右上に「コピー」
+     - チェックボックスを押せるようにする（押すと書く欄の [ ] / [x] が変わる） */
+  function decorate() {
+    var pres = el.preview.querySelectorAll("pre");
+    for (var i = 0; i < pres.length; i++) {
+      var box = document.createElement("div");
+      box.className = "codebox";
+      pres[i].parentNode.insertBefore(box, pres[i]);
+      box.appendChild(pres[i]);
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "copy-code"; b.textContent = "コピー";
+      box.appendChild(b);
+    }
+    var boxes = el.preview.querySelectorAll("li > input[type=checkbox]");
+    for (var j = 0; j < boxes.length; j++) {
+      boxes[j].disabled = false;
+      boxes[j].setAttribute("data-task", String(j));
+    }
+  }
+
+  /* 書く欄の中の n 番目のチェック行（- [ ] や 1. [x]）を付け外しする。
+     そのまま枠（``` や ~~~ の中）の行は数えない。整形後の並び順と一致させるため */
+  function toggleTask(md, n, checked) {
+    var lines = md.split("\n"), fence = null, k = 0;
+    for (var i = 0; i < lines.length; i++) {
+      var f = lines[i].match(/^\s*(`{3,}|~{3,})/);
+      if (f) {
+        if (!fence) fence = f[1][0];
+        else if (f[1][0] === fence) fence = null;
+        continue;
+      }
+      if (fence) continue;
+      var m = lines[i].match(/^(\s*(?:>\s*)*(?:[-*+]|\d+[.)])\s+\[)([ xX])(\]\s)/);
+      if (!m) continue;
+      if (k === n) {
+        lines[i] = m[1] + (checked ? "x" : " ") + lines[i].slice(m[1].length + 1);
+        return lines.join("\n");
+      }
+      k++;
+    }
+    return md;
+  }
+
+  function previewClick(e) {
+    var b = e.target.closest ? e.target.closest("button.copy-code") : null;
+    if (!b) return;
+    var pre = b.parentNode.querySelector("pre");
+    copyText(pre ? pre.textContent.replace(/\n$/, "") : "", "枠の中をコピーしました");
+  }
+  function previewChange(e) {
+    var t = e.target;
+    if (!t || t.type !== "checkbox" || !t.hasAttribute("data-task")) return;
+    el.editor.value = toggleTask(el.editor.value, Number(t.getAttribute("data-task")), t.checked);
+    paint(); saveSoon(); chPaint(); markDirty();
   }
 
   /* ---------- 保存（このブラウザの中だけ） ---------- */
@@ -56,6 +116,7 @@
     { id: "p",     label: "文",         mark: "",     text: "ここに文を書きます。",            sel: "ここに文を書きます。" },
     { id: "ul",    label: "箇条書き",   mark: "-",    text: "- ひとつめ\n- ふたつめ\n- みっつめ", sel: "ひとつめ" },
     { id: "ol",    label: "番号つき",   mark: "1.",   text: "1. さいしょに\n2. つぎに\n3. さいごに", sel: "さいしょに" },
+    { id: "task",  label: "チェック",   mark: "[ ]",  text: "- [ ] やること\n- [x] すんだこと",     sel: "やること" },
     { id: "bold",  label: "太字",       mark: "**",   text: "**大事なところ**",               sel: "大事なところ" },
     { id: "quote", label: "引用・注意", mark: ">",    text: "> 引用や注意書きは、ここに。",   sel: "引用や注意書きは、ここに。" },
     { id: "table", label: "表",         mark: "|",    text: "| 項目 | 内容 |\n|---|---|\n| 日時 | 10/17(土) 10:00 |\n| 場所 | 公民館 |", sel: "項目" },
@@ -430,6 +491,8 @@
     chPaint();
 
     el.editor.addEventListener("input", function () { paint(); saveSoon(); chPaint(); markDirty(); });
+    el.preview.addEventListener("click", previewClick);
+    el.preview.addEventListener("change", previewChange);
     el.openFile.addEventListener("click", openFile);
     el.saveFile.addEventListener("click", saveFile);
     document.addEventListener("keydown", function (e) {
@@ -468,5 +531,5 @@
   if (document.readyState === "loading") { document.addEventListener("DOMContentLoaded", boot); } else { boot(); }
 
   /* テストから触れるように */
-  window.MDP = { render: render, fileBase: fileBase, exportHtml: exportHtml, blocks: BLOCKS, insertBlock: insertBlock };
+  window.MDP = { render: render, fileBase: fileBase, exportHtml: exportHtml, blocks: BLOCKS, insertBlock: insertBlock, toggleTask: toggleTask };
 })();

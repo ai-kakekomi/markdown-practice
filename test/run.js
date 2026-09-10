@@ -116,6 +116,22 @@ ok(app.indexOf("var s = t.selectionEnd, e = s;") > 0, "ブロックは選択を�
 ok(app.indexOf('v.indexOf("\\n\\n", s)') > 0, "ブロックは、いまの段落の終わりに足す（箇条書きの真ん中に刺さらない）");
 ok(/\.pane \{[^}]*min-width: 0/.test(css), "列の幅がボタン列に押し広げられない（min-width: 0）");
 
+console.log("\n== 2.7 整形後の仕掛け（コピー・チェック） ==");
+var toggleSrc = app.match(/function toggleTask\(md, n, checked\) \{[\s\S]*?\n  \}/)[0];
+var toggleTask = new Function(toggleSrc + " return toggleTask;")();
+var todo = "# TODO\n\n- [ ] ひとつ\n- [x] ふたつ\n  - [ ] みっつ\n\n~~~\n- [ ] 枠の中\n~~~\n\n1. [ ] よっつ\n\n> - [ ] いつつ\n";
+ok(toggleTask(todo, 0, true).indexOf("- [x] ひとつ") >= 0, "整形後の1つ目を押すと、書く欄の1行目が [x] になる");
+ok(toggleTask(todo, 1, false).indexOf("- [ ] ふたつ") >= 0, "済んだものを押すと [ ] に戻る");
+ok(toggleTask(todo, 2, true).indexOf("  - [x] みっつ") >= 0, "階層を下げた行も数える");
+ok(toggleTask(todo, 3, true).indexOf("1. [x] よっつ") >= 0, "そのまま枠の中は数えない（番号つきの行が4つ目）");
+ok(toggleTask(todo, 4, true).indexOf("> - [x] いつつ") >= 0, "引用の中の行も数える");
+ok(toggleTask(todo, 9, true) === todo, "無い番号を押しても何も変わらない");
+ok(app.indexOf('data-task') > 0 && app.indexOf("boxes[j].disabled = false") > 0, "整形後のチェックボックスは押せる");
+ok(app.indexOf('className = "copy-code"') > 0 && app.indexOf("枠の中をコピーしました") > 0, "そのまま枠に「コピー」が付く");
+ok(!/copy-code/.test(app.match(/function exportHtml\(\) \{[\s\S]*?\n  \}/)[0]), "書き出すHTMLにはコピーのボタンを入れない");
+ok(/\.md li:has\(> input\[type=checkbox\]:checked\) \{[^}]*line-through/.test(css), "済んだチェックは打ち消し線");
+ok(BLOCKS.some(function (b) { return b.id === "task" && /- \[ \] /.test(b.text); }), "「チェック」のブロックがある");
+
 console.log("\n== 3. 整形と書き出し ==");
 ok(app.indexOf("breaks: true") > 0, "改行はそのまま改行にする（Enter で行が変わる）");
 ok(app.indexOf("URL.createObjectURL") > 0 && app.indexOf("a.download") > 0, ".md と .html の保存はブラウザの中で作る（送信しない）");
