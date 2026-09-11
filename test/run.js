@@ -20,9 +20,11 @@ function read(p) { return fs.readFileSync(path.join(ROOT, p), "utf8"); }
 var sandbox = { window: {}, console: console };
 sandbox.self = sandbox.window;
 vm.createContext(sandbox);
-vm.runInContext(read("vendor/marked.min.js"), sandbox);
+vm.runInContext(read("vendor/marked.js"), sandbox);
+vm.runInContext(read("vendor/marked-cjk-friendly.js"), sandbox);
 vm.runInContext(read("js/samples.js"), sandbox);
 var marked = sandbox.marked || sandbox.window.marked;
+marked.use(sandbox.window.markedCjkFriendly());
 var SAMPLES = sandbox.window.MDP_SAMPLES;
 
 console.log("\n== 1. 記入例 ==");
@@ -131,6 +133,15 @@ ok(app.indexOf('className = "copy-code"') > 0 && app.indexOf("枠の中をコピ
 ok(!/copy-code/.test(app.match(/function exportHtml\(\) \{[\s\S]*?\n  \}/)[0]), "書き出すHTMLにはコピーのボタンを入れない");
 ok(/\.md li:has\(> input\[type=checkbox\]:checked\) \{[^}]*line-through/.test(css), "済んだチェックは打ち消し線");
 ok(BLOCKS.some(function (b) { return b.id === "task" && /- \[ \] /.test(b.text); }), "「チェック」のブロックがある");
+
+console.log("\n== 2.8 日本語の強調 ==");
+var cjk = function (s) { return marked.parse(s, { gfm: true, breaks: true }).trim(); };
+ok(cjk("これは**「重要」**です。") === "<p>これは<strong>「重要」</strong>です。</p>", "鍵括弧に隣接した ** が太字になる");
+ok(cjk("**テスト。**テスト") === "<p><strong>テスト。</strong>テスト</p>", "句点に隣接した ** が太字になる");
+ok(cjk("~~取り消し。~~です") === "<p><del>取り消し。</del>です</p>", "句点に隣接した ~~ が取り消し線になる");
+ok(cjk('a **"b"** c') === "<p>a <strong>&quot;b&quot;</strong> c</p>", "英語の整形は変わらない");
+ok(cjk("2 * 3 * 4") === "<p>2 * 3 * 4</p>", "掛け算の * は強調にならない");
+ok(index.indexOf("vendor/marked-cjk-friendly.js") > 0 && app.indexOf("markedCjkFriendly()") > 0, "拡張を読み込んで有効にしている");
 
 console.log("\n== 3. 整形と書き出し ==");
 ok(app.indexOf("breaks: true") > 0, "改行はそのまま改行にする（Enter で行が変わる）");

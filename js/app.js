@@ -475,6 +475,9 @@
   /* ---------- 起動 ---------- */
   function boot() {
     ["editor", "preview", "samples", "blocks", "count", "toast", "challenge"].forEach(function (k) { el[k] = $(k); });
+    /* 「**「大事」**です」のように、鍵括弧や句読点に強調が隣接すると CommonMark の規則では太字にならない。
+       日本語ではごく普通の書きかたなので、CJK向けの拡張で埋める（日本語以外の文の整形は変わらない） */
+    if (window.marked && window.markedCjkFriendly) { marked.use(markedCjkFriendly()); }
     el.fileName = $("file-name"); el.openFile = $("open-file"); el.saveFile = $("save-file");
     chLoad();
     drawBlocks();

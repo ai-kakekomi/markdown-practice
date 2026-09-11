@@ -45,7 +45,8 @@ start index.html         # Windows
 | `js/samples.js` | お手本。増やすならここ |
 | `js/challenges.js` | チャレンジ課題と、その判定 |
 | `css/style.css` | 見た目。整形後の見た目（`.md`）は書き出すHTMLにも写される |
-| `vendor/marked.min.js` | 整形の部品 [marked](https://github.com/markedjs/marked) v15（MIT） |
+| `vendor/marked.js` | 整形の部品 [marked](https://github.com/markedjs/marked) v18（MIT） |
+| `vendor/marked-cjk-friendly.js` | 日本語の括弧や句読点に `**` が隣接しても太字になるようにする拡張 [marked-cjk-friendly](https://github.com/tats-u/markdown-cjk-friendly) v0.1.1（MIT）。ビルド無しで読めるよう、末尾の `export` を `window` への代入に変えてある |
 | `vendor/html2canvas.min.js` | 画像にする部品 [html2canvas](https://github.com/niklasvh/html2canvas) 1.4.1（MIT） |
 | `test/run.js` | テスト |
 
