@@ -1,6 +1,6 @@
 /* マークダウン練習帳
    ------------------------------------------------------------
-   左（スマホでは上）に書くと、右（スマホでは下）に整形後がその場で出る。
+   左に書くと、右に整形後がその場で出る（スマホは「書く／整形後」を切り替える）。
    すべてこの端末の中だけで動く。書いたものはこのブラウザの保存領域にだけ残り、
    どこにも送られない。
 
@@ -507,6 +507,16 @@
     $("ch-close").addEventListener("click", function () { chOpen = false; chSave(); chPaint(); });
     $("challenge-btn").addEventListener("click", function () { chOpen = !chOpen; chSave(); chPaint(); });
     el.editor.addEventListener("keydown", tabKey);
+
+    /* スマホの「書く／整形後」の切り替え。広い画面ではタブを出さないので、両方見えたまま */
+    function showTab(name) {
+      document.body.setAttribute("data-tab", name);
+      $("tab-edit").setAttribute("aria-selected", String(name === "edit"));
+      $("tab-preview").setAttribute("aria-selected", String(name === "preview"));
+    }
+    $("tab-edit").addEventListener("click", function () { showTab("edit"); });
+    $("tab-preview").addEventListener("click", function () { showTab("preview"); });
+    showTab("edit");
 
     $("copy-md").addEventListener("click", function () { copyText(el.editor.value, "書いたものをコピーしました。AIの画面に貼ってください"); });
     $("dl-md").addEventListener("click", function () { download(fileBase() + ".md", el.editor.value, "text/markdown"); toast("マークダウンのまま保存しました（" + fileBase() + ".md）"); });

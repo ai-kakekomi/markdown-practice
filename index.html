@@ -32,8 +32,16 @@
   <span class="lbl">お手本をまるごと：</span>
 </div>
 
+<!-- スマホだけ：書く／整形後を切り替える（縦に並べると、どちらも高さが足りなかった） -->
+<div class="tabs" role="tablist" aria-label="表示の切り替え">
+  <button type="button" role="tab" id="tab-edit" aria-selected="true" aria-controls="pane-edit">書く</button>
+  <button type="button" role="tab" id="tab-preview" aria-selected="false" aria-controls="pane-preview">整形後</button>
+  <span class="grow"></span>
+  <a class="privacy" href="manual.html#data">書いたものは送られません</a>
+</div>
+
 <main class="work">
-  <section class="pane editor-pane" aria-label="書くところ">
+  <section class="pane editor-pane" id="pane-edit" role="tabpanel" aria-label="書くところ">
     <div class="pane-head">
       <span class="name">書く</span>
       <span class="msg" id="count"></span>
@@ -61,10 +69,10 @@
       <p class="ch-hint" id="ch-hint"></p>
       <ul class="ch-checks" id="ch-checks"></ul>
     </div>
-    <textarea id="editor" spellcheck="false" placeholder="まず「見出し」を押してみてください。押したものが、そのまま右（スマホでは下）に出ます。"></textarea>
+    <textarea id="editor" spellcheck="false" placeholder="まず「見出し」を押してみてください。押したものが、そのまま右（スマホでは「整形後」）に出ます。"></textarea>
   </section>
 
-  <section class="pane preview-pane" aria-label="整形後（AIにはこう見えます）">
+  <section class="pane preview-pane" id="pane-preview" role="tabpanel" aria-label="整形後（AIにはこう見えます）">
     <div class="pane-head">
       <span class="name">整形後</span>
       <span class="msg">AIにはこう見えます</span>

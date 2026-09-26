@@ -205,6 +205,31 @@ textarea#editor::placeholder { color: var(--text-mute); }
 }
 .foot p { margin: .3em 0; }
 
+/* ---------- スマホ：書く／整形後を切り替える ----------
+   縦に並べると、書く欄と整形後が画面の高さを取り合い、整形後が38dvhしか取れなかった。
+   下の長い説明も邪魔だった。スマホは画面の高さに収め、選んだほうだけを全部の高さで見せる。
+   説明は、タブの横の一言（使い方の「書いたものはどこに行くか」へのリンク）にまとめる */
+.tabs { display: none; }
+@media (max-width: 899px) {
+  body { height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
+  .bar, .samples, .tabs { flex: 0 0 auto; }
+  .tabs {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 12px; background: var(--white); border-bottom: 1px solid var(--line);
+  }
+  .tabs [role=tab] { min-height: 40px; padding: 6px 18px; font-size: .9rem; font-weight: 700; }
+  .tabs [role=tab][aria-selected=true] { background: var(--primary); border-color: var(--primary); color: #fff; }
+  .tabs .grow { flex: 1; }
+  .tabs .privacy { font-size: .72rem; color: var(--text-light); text-align: right; line-height: 1.3; }
+  .work { flex: 1; min-height: 0; }
+  .pane { flex: 1; }
+  .editor-pane { border-bottom: 0; }
+  body[data-tab=edit] .preview-pane, body[data-tab=preview] .editor-pane { display: none; }
+  textarea#editor { min-height: 0; }
+  .preview-pane .preview { max-height: none; }
+  .foot { display: none; }
+}
+
 /* ---------- 画面が広いとき：左に入力、右に整形後 ---------- */
 @media (min-width: 900px) {
   .work {
